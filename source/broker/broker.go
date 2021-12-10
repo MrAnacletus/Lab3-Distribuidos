@@ -5,9 +5,13 @@ import (
 	"fmt"
 	"log"
 	"net"
-	pb "github.com/MrAnacletus/Lab2-Distribuidos/prueba/proto"
+	pb "github.com/MrAnacletus/Lab3-Distribuidos/source/proto"
 	"google.golang.org/grpc"
 )
+
+type server struct{
+	pb.UnimplementedBrokerServiceServer
+}
 
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	fmt.Println("Peticion recibida, aceptando juego")
@@ -33,5 +37,4 @@ func ServidorBroker(){
 func main(){
 	// Servidor broker
 	ServidorBroker()
-	
 }
