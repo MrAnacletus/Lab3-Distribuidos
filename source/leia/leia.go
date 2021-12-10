@@ -10,7 +10,7 @@ import (
 
 func mensajeInicial(){
 	//Establecer conexion con el servidor broker
-	fmt.Println("Informante iniciado")
+	fmt.Println("Leia iniciada")
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Could not connect: %v", err)
@@ -18,7 +18,7 @@ func mensajeInicial(){
 	defer conn.Close()
 	serviceClient := pb.NewBrokerServiceClient(conn)
 	//Crear un canal para recibir mensajes
-	stream, err := serviceClient.SayHello(context.Background(), &pb.HelloRequest{Name: "Informante"})
+	stream, err := serviceClient.SayHello(context.Background(), &pb.HelloRequest{Name: "Leia"})
 	if err != nil {
 		log.Fatalf("Error al crear el canal: %v", err)
 	}
@@ -27,9 +27,9 @@ func mensajeInicial(){
 	fmt.Println(stream.Message)
 }
 
-func enviarMensaje(mensaje string){
+func enviarComando(mensaje string){
 	//Establecer conexion con el servidor broker
-	fmt.Println("Informante iniciado")
+	fmt.Println("Leia iniciado")
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Could not connect: %v", err)
@@ -37,7 +37,7 @@ func enviarMensaje(mensaje string){
 	defer conn.Close()
 	serviceClient := pb.NewBrokerServiceClient(conn)
 	//Crear un canal para recibir mensajes
-	stream, err := serviceClient.SayHello(context.Background(), &pb.HelloRequest{Name: mensaje})
+	stream, err := serviceClient.EnviarComando(context.Background(), &pb.HelloRequest{Name: mensaje})
 	if err != nil {
 		log.Fatalf("Error al crear el canal: %v", err)
 	}
@@ -47,7 +47,6 @@ func enviarMensaje(mensaje string){
 }
 
 func main(){
-	//Establecemos conexion con el servidor broker
 	mensajeInicial()
-	enviarMensaje("Hola")
+	enviarComando("compren chelas")
 }

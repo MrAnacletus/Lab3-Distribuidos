@@ -13,4 +13,5 @@ message HelloReply {
 
 service BrokerService {
     rpc SayHello (HelloRequest) returns (HelloReply);
+    rpc EnviarComando(HelloRequest) returns (HelloReply);
 }

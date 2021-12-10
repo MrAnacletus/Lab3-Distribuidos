@@ -15,6 +15,7 @@ type server struct{
 
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	fmt.Println("Peticion recibida, aceptando juego")
+	fmt.Println("Mensaje: ", in.Name)
 	return &pb.HelloReply{Message: "Juego aceptado"}, nil
 }
 
