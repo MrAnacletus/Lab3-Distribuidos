@@ -19,6 +19,12 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 	return &pb.HelloReply{Message: "Juego aceptado"}, nil
 }
 
+func (s *server) EnviarComando(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+	fmt.Println("Peticion recibida, aceptando juego")
+	fmt.Println("Mensaje: ", in.Name)
+	return &pb.HelloReply{Message: "Juego aceptado"}, nil
+}
+
 
 func ServidorBroker(){
 	// Crear el servidor
