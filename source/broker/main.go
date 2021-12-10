@@ -237,7 +237,7 @@ func ServidorCliente(){
 	}
 }
 
-func main(){
+func main1(){
 	ServidorCliente()
 	
 }

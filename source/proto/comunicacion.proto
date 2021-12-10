@@ -1,7 +1,7 @@
 syntax = "proto3";
 package grpc;
 
-option go_package = "github.com/MrAnacletus/Lab2-Distribuidos/prueba/proto/github.com/MrAnacletus/Lab2-Distribuidos/prueba/proto";
+option go_package = "github.com/MrAnacletus/Lab3-Distribuidos/source/proto";
 
 message HelloRequest {
     string Name = 1;
@@ -35,34 +35,6 @@ message Jugada3{
     int32 Jugada2 = 4;
 }
 
-service LiderService {
+service BrokerService {
     rpc SayHello (HelloRequest) returns (HelloReply);
-    rpc RequestPozo (RequestPozoActual) returns (ResponsePozoActual);
-    rpc SendJugada (Jugada) returns (Resultado);
-    rpc SendJugada2 (Jugada2) returns (Resultado);
-    rpc SendJugada3 (Jugada3) returns (Resultado);
-}
-
-
-message RequestJugadas{
-    int32 ID = 1;
-}
-
-service NameNodeService{
-    rpc SendJugada (Jugada) returns (HelloReply);
-    rpc SendJugada2 (Jugada2) returns (HelloReply);
-    rpc SendJugada3 (Jugada3) returns (HelloReply);
-    rpc GetJugadas (RequestJugadas) returns (HelloReply);
-}
-
-message RequestPozoActual{
-    int32 Pozo = 1;
-}
-
-message ResponsePozoActual{
-    int32 Pozo = 1;
-}
-
-service PozoService {
-    rpc RequestPozo (RequestPozoActual) returns (ResponsePozoActual);
 }

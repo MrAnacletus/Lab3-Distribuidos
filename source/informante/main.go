@@ -367,7 +367,7 @@ func juego3()(bool){
 }
 
 
-func main(){
+func main1(){
 	for i := 0; i < 16; i++ {
 		ListaJugadores[i].ID = int32(i + 1)
 		ListaJugadores[i].Estado = 1
@@ -479,5 +479,4 @@ func main(){
 			PedirPozo()
 		}
 	}
-	
 }
