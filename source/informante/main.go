@@ -31,7 +31,7 @@ type Equipo struct {
 
 func EnviarPeticionJugar(){
 	//Se establece la conexión con el servidor
-	conn, err := grpc.Dial("10.6.40.218:8080",grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:8080",grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Error al conectarse con el servidor Lider: %v", err)
 	}
@@ -49,7 +49,7 @@ func EnviarPeticionJugar(){
 
 func EnviarJugada(J Jugada)(bool){
 	//Se establece la conexión con el servidor
-	conn, err := grpc.Dial("10.6.40.218:8080",grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:8080",grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Error al conectarse con el servidor Lider: %v", err)
 	}
@@ -67,7 +67,7 @@ func EnviarJugada(J Jugada)(bool){
 
 func EnviarJugada2(J Jugada2)(Jugada){
 	//Se establece la conexión con el servidor
-	conn, err := grpc.Dial("10.6.40.218:8080",grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:8080",grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Error al conectarse con el servidor Lider: %v", err)
 	}
@@ -86,7 +86,7 @@ func EnviarJugada2(J Jugada2)(Jugada){
 
 func EnviarJugada3(J Equipo)(Jugada){
 	//Se establece la conexión con el servidor
-	conn, err := grpc.Dial("10.6.40.218:8080",grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:8080",grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Error al conectarse con el servidor Lider: %v", err)
 	}
@@ -104,7 +104,7 @@ func EnviarJugada3(J Equipo)(Jugada){
 }
 func PedirPozo(){
 	//Se establece la conexión con el servidor
-	conn, err := grpc.Dial("10.6.40.218:8080",grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:8080",grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Error al conectarse con el servidor Lider: %v", err)
 	}
