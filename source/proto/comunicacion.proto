@@ -11,30 +11,6 @@ message HelloReply {
     string Message = 1;
 }
 
-message Jugada{
-    int32 ID = 1;
-    int32 Jugada = 2;
-}
-
-message Resultado{
-    int32 ID = 1;
-    int32 Estado = 2;
-}
-
-message Jugada2{
-    repeated int32 ID1 = 1;
-    repeated int32 ID2 = 2;
-    repeated int32 Jugada1 = 3;
-    repeated int32 Jugada2 = 4;
-}
-
-message Jugada3{
-    int32 ID1 = 1;
-    int32 ID2 = 2;
-    int32 Jugada1 = 3;
-    int32 Jugada2 = 4;
-}
-
 service BrokerService {
     rpc SayHello (HelloRequest) returns (HelloReply);
 }

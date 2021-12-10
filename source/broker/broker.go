@@ -1,12 +1,19 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
 	pb "github.com/MrAnacletus/Lab2-Distribuidos/prueba/proto"
 	"google.golang.org/grpc"
 )
+
+func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+	fmt.Println("Peticion recibida, aceptando juego")
+	return &pb.HelloReply{Message: "Juego aceptado"}, nil
+}
+
 
 func ServidorBroker(){
 	// Crear el servidor
@@ -17,7 +24,7 @@ func ServidorBroker(){
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterBrokerServer(s, &server{})
+	pb.RegisterBrokerServiceServer(s, &server{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Error al servir: %v", err)
 	}

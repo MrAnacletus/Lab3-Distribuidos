@@ -21,11 +21,6 @@ type Jugada struct {
 	Jugada int32
 }
 
-func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	fmt.Println("Peticion recibida, aceptando juego")
-	return &pb.HelloReply{Message: "Juego aceptado"}, nil
-}
-
 func (s *server) SendJugada(ctx context.Context, in *pb.Jugada) (*pb.Resultado, error) {
 	// Enviarla a NameNode
 	fmt.Println("Jugadas recibidas, jugada:" + fmt.Sprint(in.GetJugada()) + " del jugador: " + fmt.Sprint(in.GetID()))
