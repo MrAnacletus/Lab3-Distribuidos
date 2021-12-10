@@ -1,0 +1,68 @@
+syntax = "proto3";
+package grpc;
+
+option go_package = "github.com/MrAnacletus/Lab2-Distribuidos/prueba/proto/github.com/MrAnacletus/Lab2-Distribuidos/prueba/proto";
+
+message HelloRequest {
+    string Name = 1;
+}
+
+message HelloReply {
+    string Message = 1;
+}
+
+message Jugada{
+    int32 ID = 1;
+    int32 Jugada = 2;
+}
+
+message Resultado{
+    int32 ID = 1;
+    int32 Estado = 2;
+}
+
+message Jugada2{
+    repeated int32 ID1 = 1;
+    repeated int32 ID2 = 2;
+    repeated int32 Jugada1 = 3;
+    repeated int32 Jugada2 = 4;
+}
+
+message Jugada3{
+    int32 ID1 = 1;
+    int32 ID2 = 2;
+    int32 Jugada1 = 3;
+    int32 Jugada2 = 4;
+}
+
+service LiderService {
+    rpc SayHello (HelloRequest) returns (HelloReply);
+    rpc RequestPozo (RequestPozoActual) returns (ResponsePozoActual);
+    rpc SendJugada (Jugada) returns (Resultado);
+    rpc SendJugada2 (Jugada2) returns (Resultado);
+    rpc SendJugada3 (Jugada3) returns (Resultado);
+}
+
+
+message RequestJugadas{
+    int32 ID = 1;
+}
+
+service NameNodeService{
+    rpc SendJugada (Jugada) returns (HelloReply);
+    rpc SendJugada2 (Jugada2) returns (HelloReply);
+    rpc SendJugada3 (Jugada3) returns (HelloReply);
+    rpc GetJugadas (RequestJugadas) returns (HelloReply);
+}
+
+message RequestPozoActual{
+    int32 Pozo = 1;
+}
+
+message ResponsePozoActual{
+    int32 Pozo = 1;
+}
+
+service PozoService {
+    rpc RequestPozo (RequestPozoActual) returns (ResponsePozoActual);
+}
