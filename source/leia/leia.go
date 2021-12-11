@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"os"
+	"bufio"
 	"google.golang.org/grpc"
 	pb "github.com/MrAnacletus/Lab3-Distribuidos/source/proto"
 )
@@ -25,10 +27,10 @@ func mensajeInicial(){
 	}
 	//Recibir mensajes
 	fmt.Println("Recibiendo mensajes")
-	fmt.Println(stream.Message)
+	return stream.Message
 }
 
-func enviarComando(mensaje string){
+func enviarComando(mensaje string) string{
 	//Establecer conexion con el servidor broker
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
@@ -111,6 +113,22 @@ func boti(){
 		default:
 			fmt.Println("k chucha")
 	}
+}
+
+func ConstruirMensaje(){
+	//Pregunta cual de los cuatro comandos utilizar
+	fmt.Println("Ingrese el comando que desea utilizar")
+	fmt.Println("Los comandos disponibles son:")
+	fmt.Println("AddCity: AddCity <planeta> <nombre_ciudad> <poblacion> si no quiere poner poblcion escriba 0")
+	fmt.Println("UpdateName: UpdateName <planeta> <nombre_ciudad> <nuevo_nombre>")
+	fmt.Println("UpdateNumber: UpdateNumber <planeta> <nombre_ciudad> <nueva_poblacion>")
+	fmt.Println("DeleteCity: DeleteCity <planeta> <nombre_ciudad>")
+	var comando string
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	comando = scanner.Text()
+	respuesta := enviarComando(comando)
+	fmt.Println(respuesta)
 }
 
 func main(){

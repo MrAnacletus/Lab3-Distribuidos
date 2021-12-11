@@ -135,3 +135,89 @@ var BrokerService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "comunicacion.proto",
 }
+
+// FulcrumServiceClient is the client API for FulcrumService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type FulcrumServiceClient interface {
+	EnviarComando(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+}
+
+type fulcrumServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewFulcrumServiceClient(cc grpc.ClientConnInterface) FulcrumServiceClient {
+	return &fulcrumServiceClient{cc}
+}
+
+func (c *fulcrumServiceClient) EnviarComando(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
+	out := new(HelloReply)
+	err := c.cc.Invoke(ctx, "/grpc.FulcrumService/EnviarComando", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// FulcrumServiceServer is the server API for FulcrumService service.
+// All implementations must embed UnimplementedFulcrumServiceServer
+// for forward compatibility
+type FulcrumServiceServer interface {
+	EnviarComando(context.Context, *HelloRequest) (*HelloReply, error)
+	mustEmbedUnimplementedFulcrumServiceServer()
+}
+
+// UnimplementedFulcrumServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedFulcrumServiceServer struct {
+}
+
+func (UnimplementedFulcrumServiceServer) EnviarComando(context.Context, *HelloRequest) (*HelloReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnviarComando not implemented")
+}
+func (UnimplementedFulcrumServiceServer) mustEmbedUnimplementedFulcrumServiceServer() {}
+
+// UnsafeFulcrumServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to FulcrumServiceServer will
+// result in compilation errors.
+type UnsafeFulcrumServiceServer interface {
+	mustEmbedUnimplementedFulcrumServiceServer()
+}
+
+func RegisterFulcrumServiceServer(s grpc.ServiceRegistrar, srv FulcrumServiceServer) {
+	s.RegisterService(&FulcrumService_ServiceDesc, srv)
+}
+
+func _FulcrumService_EnviarComando_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HelloRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FulcrumServiceServer).EnviarComando(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.FulcrumService/EnviarComando",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FulcrumServiceServer).EnviarComando(ctx, req.(*HelloRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// FulcrumService_ServiceDesc is the grpc.ServiceDesc for FulcrumService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var FulcrumService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "grpc.FulcrumService",
+	HandlerType: (*FulcrumServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "EnviarComando",
+			Handler:    _FulcrumService_EnviarComando_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "comunicacion.proto",
+}

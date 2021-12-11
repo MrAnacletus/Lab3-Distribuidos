@@ -15,3 +15,7 @@ service BrokerService {
     rpc SayHello (HelloRequest) returns (HelloReply);
     rpc EnviarComando(HelloRequest) returns (HelloReply);
 }
+
+service FulcrumService{
+    rpc EnviarComando(HelloRequest) returns (HelloReply);
+}
