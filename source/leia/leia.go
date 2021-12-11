@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strconv"
 	"google.golang.org/grpc"
 	pb "github.com/MrAnacletus/Lab3-Distribuidos/source/proto"
 )
@@ -45,7 +46,7 @@ func enviarComando(mensaje string){
 	fmt.Println(stream.Message)
 }
 
-func construirComando(){
+func boti(){
 	fmt.Println("wena llegaste a la boti")
 	fmt.Println("sirvase")
 	fmt.Println("1. chela")
@@ -57,16 +58,62 @@ func construirComando(){
 	fmt.Scan(&opcion)
 	switch opcion{
 		case 1:
-			fmt.Println("elija su marca do chela")
-			fmt.Println("1. andes")
-			fmt.Println("2. baltica")
-			fmt.Println("3. cristal")
-			fmt.Println("4. dorada")
-			fmt.Println("5. era")
+			fmt.Println("ingrese su marca do chela")
+			var chela string
+			fmt.Scan(&chela)
+			fmt.Println("ingrese el numero do chelas que se va a llevar")
+			var cantidad int
+			fmt.Scan(&cantidad)
+			if cantidad == 0 {
+				enviarComando("era la wea")
+			} else {
+				enviarComando("se lleva "+strconv.Itoa(cantidad)+"de "+chela)
+			}
+		case 2:
+			fmt.Println("ingrese su marca do chela")
+			var chela string
+			fmt.Scan(&chela)
+			fmt.Println("ingrese el numero do chelas que se va a llevar")
+			var cantidad int
+			fmt.Scan(&cantidad)
+			if cantidad == 0 {
+				enviarComando("era la wea")
+			} else{
+				enviarComando("se lleva "+strconv.Itoa(cantidad)+"de "+chela)
+			}
+		case 3:
+			fmt.Println("ingrese su marca do chela")
+			var chela string
+			fmt.Scan(&chela)
+			fmt.Println("ingrese el numero do chelas que se va a llevar")
+			var cantidad int
+			fmt.Scan(&cantidad)
+			if cantidad == 0{
+				enviarComando("era la wea")
+			} else{
+				enviarComando("se lleva "+strconv.Itoa(cantidad)+"de "+chela)
+			}
+		case 4:
+			fmt.Println("ingrese su marca do chela")
+			var chela string
+			fmt.Scan(&chela)
+			fmt.Println("ingrese el numero do chelas que se va a llevar")
+			var cantidad int
+			fmt.Scan(&cantidad)
+			if cantidad == 0{
+				enviarComando("era la wea")
+			} else{
+				enviarComando("se lleva "+strconv.Itoa(cantidad)+" de "+chela)
+			}
+		case 5:
+			fmt.Println("era")
+			fmt.Println("era la wea cabros")
+		default:
+			fmt.Println("k chucha")
 	}
 }
 
 func main(){
 	mensajeInicial()
-	enviarComando("compren chelas")
+	boti()
 }

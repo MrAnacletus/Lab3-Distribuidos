@@ -1,10 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"log"
-	"strconv"
+	"os"
 
 	pb "github.com/MrAnacletus/Lab3-Distribuidos/source/proto"
 	"google.golang.org/grpc"
@@ -29,7 +30,7 @@ func mensajeInicial(){
 	fmt.Println(stream.Message)
 }
 
-func enviarMensaje(mensaje string){
+func enviarMensaje(mensaje string) string{
 	//Establecer conexion con el servidor broker
 	fmt.Println("Informante iniciado")
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
@@ -44,83 +45,30 @@ func enviarMensaje(mensaje string){
 		log.Fatalf("Error al crear el canal: %v", err)
 	}
 	//Recibir mensajes
-	fmt.Println("Recibiendo mensajes")
-	fmt.Println(stream.Message)
+	fmt.Println("Respondiendo")
+	return stream.Message
 }
 
 func ConstruirMensaje(){
 	//Pregunta cual de los cuatro comandos utilizar
 	fmt.Println("Ingrese el comando que desea utilizar")
-	fmt.Println("1. AddCity")
-	fmt.Println("2. UpdateName")
-	fmt.Println("3. UpdateNumber")
-	fmt.Println("4. DeleteCity")
-	fmt.Println("5. Salir")
-	var comando int
-	fmt.Scan(&comando)
-	switch comando {
-		case 1:
-			fmt.Println("Ingrese el nombre del planeta")
-			var nombrePlaneta string
-			fmt.Scan(&nombrePlaneta)
-			fmt.Println("Ingrese el nombre de la ciudad")
-			var nombreCiudad string
-			fmt.Scan(&nombreCiudad)
-			fmt.Println("Ingrese el valor, si no quiere ingresar un valor, ingrese 0")
-			var numero int
-			fmt.Scan(&numero)
-			if numero == 0{
-				enviarMensaje("AddCity " + nombrePlaneta + " " + nombreCiudad)
-			}else{
-				enviarMensaje("AddCity " + nombrePlaneta + " " + nombreCiudad + " " + strconv.Itoa(numero))
-			}
-			break
-		case 2:
-			fmt.Println("Ingrese el nombre del planeta")
-			var nombrePlaneta string
-			fmt.Scan(&nombrePlaneta)
-			fmt.Println("Ingrese el nombre de la ciudad")
-			var nombreCiudad string
-			fmt.Scan(&nombreCiudad)
-			fmt.Println("Ingrese el nuevo nombre de la ciudad")
-			var nuevoNombre string
-			fmt.Scan(&nuevoNombre)
-			enviarMensaje("UpdateName " + nombrePlaneta + " " + nombreCiudad + " " + nuevoNombre)
-			break
-		case 3:
-			fmt.Println("Ingrese el nombre del planeta")
-			var nombrePlaneta string
-			fmt.Scan(&nombrePlaneta)
-			fmt.Println("Ingrese el nombre de la ciudad")
-			var nombreCiudad string
-			fmt.Scan(&nombreCiudad)
-			fmt.Println("Ingrese el nuevo numero de habitantes")
-			var nuevoNumero int
-			fmt.Scan(&nuevoNumero)
-			enviarMensaje("UpdateNumber " + nombrePlaneta + " " + nombreCiudad + " " + strconv.Itoa(nuevoNumero))
-			break
-		case 4:
-			fmt.Println("Ingrese el nombre del planeta")
-			var nombrePlaneta string
-			fmt.Scan(&nombrePlaneta)
-			fmt.Println("Ingrese el nombre de la ciudad")
-			var nombreCiudad string
-			fmt.Scan(&nombreCiudad)
-			enviarMensaje("DeleteCity " + nombrePlaneta + " " + nombreCiudad)
-			break
-		case 5:
-			fmt.Println("Saliendo...")
-			break
-		default:
-			fmt.Println("Comando no reconocido")
-			break
-	}
+	fmt.Println("Los comandos disponibles son:")
+	fmt.Println("AddCity: AddCity <planeta> <nombre_ciudad> <poblacion> si no quiere poner poblcion escriba 0")
+	fmt.Println("UpdateName: UpdateName <planeta> <nombre_ciudad> <nuevo_nombre>")
+	fmt.Println("UpdateNumber: UpdateNumber <planeta> <nombre_ciudad> <nueva_poblacion>")
+	fmt.Println("DeleteCity: DeleteCity <planeta> <nombre_ciudad>")
+	var comando string
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	comando = scanner.Text()
+	log.Println("Comando: ", comando)
+	respuesta := enviarMensaje(comando)
+	fmt.Println(respuesta)
 }
 
 func main(){
 	//Establecemos conexion con el servidor broker
 	mensajeInicial()
 	//Enviar mensaje
-	mensaje:= ConstruirMensaje()
-	enviarMensaje(mensaje)
+	ConstruirMensaje()
 }
