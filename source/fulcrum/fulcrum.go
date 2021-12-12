@@ -6,7 +6,6 @@ import (
 	"log"
 	"net"
 	"regexp"
-
 	pb "github.com/MrAnacletus/Lab3-Distribuidos/source/proto"
 	"google.golang.org/grpc"
 )
@@ -14,20 +13,26 @@ import (
 type serverFulcrum struct{
 	pb.UnimplementedFulcrumServiceServer
 }
+// Variable global de vector
+var vector []int = []int{0,0,0}
+
 
 func (s *serverFulcrum) EnviarComando(ctx context.Context, in *pb.ComandoSend) (*pb.ComandoReply, error) {
 	fmt.Println("Enviando comando")
 	fmt.Println("Name: " + in.Comando)
-	interpretarMensaje(in.Comando)
+	interpretarMensaje(in.Comando,in.Vector)
 	return &pb.ComandoReply{Comando: in.Comando}, nil
 }
 
-func interpretarMensaje(mensaje string) {
+func interpretarMensaje(mensaje string, vector string) {
 	//interpretar el mensaje
 	fmt.Println("Interpretando mensaje")
 	//separar el mensaje en espacios
 	fmt.Println("Separando mensaje")
 	palabras := regexp.MustCompile(" ").Split(mensaje, -1)
+	// Revisar consistencia con el vector
+	vectorSpliteado := regexp.MustCompile("[(),]+").Split(vector, -1)
+	fmt.Println("Vector: ", vectorSpliteado)
 	// Interpretar el comando
 	fmt.Println("Interpretando comando")
 	if palabras[0] == "AddCity" {
@@ -50,7 +55,7 @@ func AddCity(pais string, ciudad string, valor string) {
 	fmt.Println("Pais: ", pais)
 	fmt.Println("Ciudad: ", ciudad)
 	fmt.Println("Valor: ", valor)
-	
+
 }
 func UpdateName(pais string, ciudad string, nombre string) {
 	fmt.Println("Actualizando nombre")
@@ -77,7 +82,6 @@ func ServidorFulcrum(puertoserver int) {
 	if err != nil {
 		log.Fatalf("Error al escuchar: %v", err)
 	}
-
 	s := grpc.NewServer()
 	pb.RegisterFulcrumServiceServer(s, &serverFulcrum{})
 	if err := s.Serve(lis); err != nil {

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-
 	pb "github.com/MrAnacletus/Lab3-Distribuidos/source/proto"
 	"google.golang.org/grpc"
 )
@@ -83,7 +82,7 @@ func enviarAFulcrum(n int, S string) string{
 	defer conn.Close()
 	serviceClient := pb.NewFulcrumServiceClient(conn)
 	//Crear un canal para recibir mensajes
-	vector := "Hola, no importa"
+	vector := "[1,0,0]"
 	stream, err := serviceClient.EnviarComando(context.Background(), &pb.ComandoSend{Comando: S, Vector: vector})
 	if err != nil {
 		log.Fatalf("Error al crear el canal: %v", err)
