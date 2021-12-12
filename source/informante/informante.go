@@ -83,13 +83,14 @@ func enviarAFulcrum(n int, S string) string{
 	defer conn.Close()
 	serviceClient := pb.NewFulcrumServiceClient(conn)
 	//Crear un canal para recibir mensajes
-	stream, err := serviceClient.EnviarComando(context.Background(), &pb.HelloRequest{Name: S})
+	vector := "Hola, no importa"
+	stream, err := serviceClient.EnviarComando(context.Background(), &pb.ComandoSend{Comando: S, Vector: vector})
 	if err != nil {
 		log.Fatalf("Error al crear el canal: %v", err)
 	}
 	//Recibir mensajes
 	fmt.Println("Respondiendo")
-	return stream.Message
+	return stream.Comando
 }
 
 func main(){

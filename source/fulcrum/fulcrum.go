@@ -15,11 +15,11 @@ type serverFulcrum struct{
 	pb.UnimplementedFulcrumServiceServer
 }
 
-func (s *serverFulcrum) EnviarComando(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+func (s *serverFulcrum) EnviarComando(ctx context.Context, in *pb.ComandoSend) (*pb.ComandoReply, error) {
 	fmt.Println("Enviando comando")
-	fmt.Println("Name: " + in.Name)
-	interpretarMensaje(in.Name)
-	return &pb.HelloReply{Message: "Comando enviado"}, nil
+	fmt.Println("Name: " + in.Comando)
+	interpretarMensaje(in.Comando)
+	return &pb.ComandoReply{Comando: in.Comando}, nil
 }
 
 func interpretarMensaje(mensaje string) {
