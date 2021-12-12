@@ -10,6 +10,12 @@ import (
 	"google.golang.org/grpc"
 )
 
+// Vectores de Fulcrum
+var vector1 = []int{0,0,0}
+var vector2 = []int{0,0,0}
+var vector3 = []int{0,0,0}
+
+
 func mensajeInicial(){
 	//Establecer conexion con el servidor broker
 	fmt.Println("Informante iniciado")
@@ -81,8 +87,26 @@ func enviarAFulcrum(n int, S string) string{
 	}
 	defer conn.Close()
 	serviceClient := pb.NewFulcrumServiceClient(conn)
-	//Crear un canal para recibir mensajes
-	vector := "[1,0,0]"
+	// Crear un canal para recibir mensajes
+	// Escribir el vector de Fulcrum
+	vector := ""
+	switch n {
+	case 1:
+		for i := 0; i < 2; i++ {
+			vector = vector + fmt.Sprintf("%d,", vector1[i])
+		}
+		vector = vector + fmt.Sprintf("%d", vector1[2])
+	case 2:
+		for i := 0; i < 2; i++ {
+			vector = vector + fmt.Sprintf("%d,", vector2[i])
+		}
+		vector = vector + fmt.Sprintf("%d", vector2[2])
+	case 3:
+		for i := 0; i < 2; i++ {
+			vector = vector + fmt.Sprintf("%d,", vector3[i])
+		}
+		vector = vector + fmt.Sprintf("%d", vector3[2])
+	}
 	stream, err := serviceClient.EnviarComando(context.Background(), &pb.ComandoSend{Comando: S, Vector: vector})
 	if err != nil {
 		log.Fatalf("Error al crear el canal: %v", err)
