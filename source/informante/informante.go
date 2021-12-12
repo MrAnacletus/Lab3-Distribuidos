@@ -63,7 +63,33 @@ func ConstruirMensaje(){
 	comando = scanner.Text()
 	log.Println("Comando: ", comando)
 	respuesta := enviarMensaje(comando)
-	fmt.Println(respuesta)
+	if respuesta == "1"{
+		// Se eligio el fulcrum 1
+		fmt.Println("Se eligio el fulcrum 1")
+		fmt.Println("reenviando mensaje")
+		// Enviar Comando a fulcrum 1
+		enviarAFulcrum(1, comando)
+	}
+}
+
+func enviarAFulcrum(n int, S string) string{
+	// Establecer conexion con el servidor fulcrum
+	fmt.Println("Informante iniciado")
+	puerto := "localhost:" + fmt.Sprintf("%d", 50051+n)
+	conn, err := grpc.Dial(puerto, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Could not connect: %v", err)
+	}
+	defer conn.Close()
+	serviceClient := pb.NewFulcrumServiceClient(conn)
+	//Crear un canal para recibir mensajes
+	stream, err := serviceClient.EnviarComando(context.Background(), &pb.HelloRequest{Name: S})
+	if err != nil {
+		log.Fatalf("Error al crear el canal: %v", err)
+	}
+	//Recibir mensajes
+	fmt.Println("Respondiendo")
+	return stream.Message
 }
 
 func main(){

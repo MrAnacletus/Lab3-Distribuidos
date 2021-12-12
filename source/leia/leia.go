@@ -27,7 +27,7 @@ func mensajeInicial(){
 	}
 	//Recibir mensajes
 	fmt.Println("Recibiendo mensajes")
-	return stream.Message
+	fmt.Println(stream.Message)
 }
 
 func enviarComando(mensaje string) string{
@@ -45,7 +45,7 @@ func enviarComando(mensaje string) string{
 	}
 	//Recibir mensajes
 	fmt.Println("Recibiendo mensajes")
-	fmt.Println(stream.Message)
+	return stream.Message
 }
 
 func boti(){
@@ -119,7 +119,7 @@ func ConstruirMensaje(){
 	//Pregunta cual de los cuatro comandos utilizar
 	fmt.Println("Ingrese el comando que desea utilizar")
 	fmt.Println("Los comandos disponibles son:")
-	fmt.Println("AddCity: AddCity <planeta> <nombre_ciudad> <poblacion> si no quiere poner poblcion escriba 0")
+	fmt.Println("AddCity: AddCity <planeta> <nombre_ciudad> <poblacion> si no quiere poner poblacion escriba 0")
 	fmt.Println("UpdateName: UpdateName <planeta> <nombre_ciudad> <nuevo_nombre>")
 	fmt.Println("UpdateNumber: UpdateNumber <planeta> <nombre_ciudad> <nueva_poblacion>")
 	fmt.Println("DeleteCity: DeleteCity <planeta> <nombre_ciudad>")

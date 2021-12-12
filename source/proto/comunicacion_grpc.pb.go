@@ -140,7 +140,7 @@ var BrokerService_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FulcrumServiceClient interface {
-	EnviarComando(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+	EnviarComando(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*ComandoReply, error)
 }
 
 type fulcrumServiceClient struct {
@@ -151,8 +151,8 @@ func NewFulcrumServiceClient(cc grpc.ClientConnInterface) FulcrumServiceClient {
 	return &fulcrumServiceClient{cc}
 }
 
-func (c *fulcrumServiceClient) EnviarComando(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
-	out := new(HelloReply)
+func (c *fulcrumServiceClient) EnviarComando(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*ComandoReply, error) {
+	out := new(ComandoReply)
 	err := c.cc.Invoke(ctx, "/grpc.FulcrumService/EnviarComando", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -164,7 +164,7 @@ func (c *fulcrumServiceClient) EnviarComando(ctx context.Context, in *HelloReque
 // All implementations must embed UnimplementedFulcrumServiceServer
 // for forward compatibility
 type FulcrumServiceServer interface {
-	EnviarComando(context.Context, *HelloRequest) (*HelloReply, error)
+	EnviarComando(context.Context, *ComandoSend) (*ComandoReply, error)
 	mustEmbedUnimplementedFulcrumServiceServer()
 }
 
@@ -172,7 +172,7 @@ type FulcrumServiceServer interface {
 type UnimplementedFulcrumServiceServer struct {
 }
 
-func (UnimplementedFulcrumServiceServer) EnviarComando(context.Context, *HelloRequest) (*HelloReply, error) {
+func (UnimplementedFulcrumServiceServer) EnviarComando(context.Context, *ComandoSend) (*ComandoReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnviarComando not implemented")
 }
 func (UnimplementedFulcrumServiceServer) mustEmbedUnimplementedFulcrumServiceServer() {}
@@ -189,7 +189,7 @@ func RegisterFulcrumServiceServer(s grpc.ServiceRegistrar, srv FulcrumServiceSer
 }
 
 func _FulcrumService_EnviarComando_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HelloRequest)
+	in := new(ComandoSend)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -201,7 +201,7 @@ func _FulcrumService_EnviarComando_Handler(srv interface{}, ctx context.Context,
 		FullMethod: "/grpc.FulcrumService/EnviarComando",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FulcrumServiceServer).EnviarComando(ctx, req.(*HelloRequest))
+		return srv.(FulcrumServiceServer).EnviarComando(ctx, req.(*ComandoSend))
 	}
 	return interceptor(ctx, in, info, handler)
 }

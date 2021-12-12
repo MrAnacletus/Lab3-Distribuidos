@@ -11,11 +11,21 @@ message HelloReply {
     string Message = 1;
 }
 
+message ComandoSend{
+    string Comando = 1;
+    string vector = 2;
+}
+
+message ComandoReply{
+    string Comando = 1;
+    string vector = 2;
+}
+
 service BrokerService {
     rpc SayHello (HelloRequest) returns (HelloReply);
     rpc EnviarComando(HelloRequest) returns (HelloReply);
 }
 
 service FulcrumService{
-    rpc EnviarComando(HelloRequest) returns (HelloReply);
+    rpc EnviarComando(ComandoSend) returns (ComandoReply);
 }
