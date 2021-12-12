@@ -28,4 +28,5 @@ service BrokerService {
 
 service FulcrumService{
     rpc EnviarComando(ComandoSend) returns (ComandoReply);
+    rpc EnviarComandoLeia(ComandoSend) returns (ComandoReply);
 }

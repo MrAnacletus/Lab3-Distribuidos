@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 
 	pb "github.com/MrAnacletus/Lab3-Distribuidos/source/proto"
@@ -27,6 +28,8 @@ func (s *serverFulcrum) EnviarComando(ctx context.Context, in *pb.ComandoSend) (
 	interpretarMensaje(in.Comando,in.Vector)
 	return &pb.ComandoReply{Comando: in.Comando}, nil
 }
+
+
 
 func interpretarMensaje(mensaje string, vector string) {
 	//interpretar el mensaje
@@ -325,6 +328,46 @@ func DeleteCity(pais string, ciudad string) {
 	lineasLog = append(lineasLog, "DeleteCity "+pais+" "+ciudad)
 	// Escribir archivo Log{planeta}
 	escribirArchivo("log"+pais, lineasLog)
+}
+
+func GetNumberRebelds(pais string, ciudad string) int{
+	fmt.Println("Obteniendo numero de rebeldes")
+	fmt.Println("Pais: ", pais)
+	fmt.Println("Ciudad: ", ciudad)
+	// Checar si el archivo existe
+	// Si no existe, crearlo
+	// Si existe, retornar el valor de la ciudad
+	_, err := os.Stat(pais + ".txt")
+	if err != nil {
+		if os.IsNotExist(err) {
+			fmt.Println("El archivo no existe")
+			file, err := os.Create(pais + ".txt")
+			if err != nil {
+				fmt.Println("Error al crear el archivo")
+				return -1
+			}
+			file.Close()
+			fmt.Println("Archivo creado")
+			return 0
+		}
+	}
+	// Leer el archivo linea a linea guardandolas en una variable
+	// Buscar la ciudad en el archivo
+	// Separar el valor de la ciudad
+	// Retornar el valor de la ciudad
+	lineas := leerArchivo(pais)
+	for _, linea := range lineas {
+		if strings.Contains(linea, ciudad) {
+			valorCiudad := strings.Split(linea, " ")
+			intVar, err := strconv.Atoi(valorCiudad[3])
+			if err != nil {
+				fmt.Println("Error al convertir el valor a entero")
+				return -1
+			}
+			return intVar
+		}
+	}
+	return -1
 }
 
 func ServidorFulcrum(puertoserver int) {

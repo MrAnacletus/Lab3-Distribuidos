@@ -141,6 +141,7 @@ var BrokerService_ServiceDesc = grpc.ServiceDesc{
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FulcrumServiceClient interface {
 	EnviarComando(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*ComandoReply, error)
+	EnviarComandoLeia(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*ComandoReply, error)
 }
 
 type fulcrumServiceClient struct {
@@ -160,11 +161,21 @@ func (c *fulcrumServiceClient) EnviarComando(ctx context.Context, in *ComandoSen
 	return out, nil
 }
 
+func (c *fulcrumServiceClient) EnviarComandoLeia(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*ComandoReply, error) {
+	out := new(ComandoReply)
+	err := c.cc.Invoke(ctx, "/grpc.FulcrumService/EnviarComandoLeia", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FulcrumServiceServer is the server API for FulcrumService service.
 // All implementations must embed UnimplementedFulcrumServiceServer
 // for forward compatibility
 type FulcrumServiceServer interface {
 	EnviarComando(context.Context, *ComandoSend) (*ComandoReply, error)
+	EnviarComandoLeia(context.Context, *ComandoSend) (*ComandoReply, error)
 	mustEmbedUnimplementedFulcrumServiceServer()
 }
 
@@ -174,6 +185,9 @@ type UnimplementedFulcrumServiceServer struct {
 
 func (UnimplementedFulcrumServiceServer) EnviarComando(context.Context, *ComandoSend) (*ComandoReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnviarComando not implemented")
+}
+func (UnimplementedFulcrumServiceServer) EnviarComandoLeia(context.Context, *ComandoSend) (*ComandoReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnviarComandoLeia not implemented")
 }
 func (UnimplementedFulcrumServiceServer) mustEmbedUnimplementedFulcrumServiceServer() {}
 
@@ -206,6 +220,24 @@ func _FulcrumService_EnviarComando_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FulcrumService_EnviarComandoLeia_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ComandoSend)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FulcrumServiceServer).EnviarComandoLeia(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.FulcrumService/EnviarComandoLeia",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FulcrumServiceServer).EnviarComandoLeia(ctx, req.(*ComandoSend))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FulcrumService_ServiceDesc is the grpc.ServiceDesc for FulcrumService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -216,6 +248,10 @@ var FulcrumService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "EnviarComando",
 			Handler:    _FulcrumService_EnviarComando_Handler,
+		},
+		{
+			MethodName: "EnviarComandoLeia",
+			Handler:    _FulcrumService_EnviarComandoLeia_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
