@@ -34,4 +34,8 @@ service BrokerService {
 service FulcrumService{
     rpc EnviarComando(ComandoSend) returns (ComandoReply);
     rpc EnviarComandoLeia(ComandoSend) returns (Rebeldes);
+    rpc InformarMerge(HelloRequest)returns(HelloReply);
+    rpc InformarInicioEnvio(HelloRequest)returns(HelloReply);
+    rpc EnviarComandoMerge(ComandoSend) returns (ComandoReply);
+    rpc Mergan(HelloRequest) returns (HelloReply);
 }

@@ -142,6 +142,10 @@ var BrokerService_ServiceDesc = grpc.ServiceDesc{
 type FulcrumServiceClient interface {
 	EnviarComando(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*ComandoReply, error)
 	EnviarComandoLeia(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*Rebeldes, error)
+	InformarMerge(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+	InformarInicioEnvio(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+	EnviarComandoMerge(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*ComandoReply, error)
+	Mergan(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
 }
 
 type fulcrumServiceClient struct {
@@ -170,12 +174,52 @@ func (c *fulcrumServiceClient) EnviarComandoLeia(ctx context.Context, in *Comand
 	return out, nil
 }
 
+func (c *fulcrumServiceClient) InformarMerge(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
+	out := new(HelloReply)
+	err := c.cc.Invoke(ctx, "/grpc.FulcrumService/InformarMerge", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fulcrumServiceClient) InformarInicioEnvio(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
+	out := new(HelloReply)
+	err := c.cc.Invoke(ctx, "/grpc.FulcrumService/InformarInicioEnvio", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fulcrumServiceClient) EnviarComandoMerge(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*ComandoReply, error) {
+	out := new(ComandoReply)
+	err := c.cc.Invoke(ctx, "/grpc.FulcrumService/EnviarComandoMerge", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fulcrumServiceClient) Mergan(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
+	out := new(HelloReply)
+	err := c.cc.Invoke(ctx, "/grpc.FulcrumService/Mergan", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FulcrumServiceServer is the server API for FulcrumService service.
 // All implementations must embed UnimplementedFulcrumServiceServer
 // for forward compatibility
 type FulcrumServiceServer interface {
 	EnviarComando(context.Context, *ComandoSend) (*ComandoReply, error)
 	EnviarComandoLeia(context.Context, *ComandoSend) (*Rebeldes, error)
+	InformarMerge(context.Context, *HelloRequest) (*HelloReply, error)
+	InformarInicioEnvio(context.Context, *HelloRequest) (*HelloReply, error)
+	EnviarComandoMerge(context.Context, *ComandoSend) (*ComandoReply, error)
+	Mergan(context.Context, *HelloRequest) (*HelloReply, error)
 	mustEmbedUnimplementedFulcrumServiceServer()
 }
 
@@ -188,6 +232,18 @@ func (UnimplementedFulcrumServiceServer) EnviarComando(context.Context, *Comando
 }
 func (UnimplementedFulcrumServiceServer) EnviarComandoLeia(context.Context, *ComandoSend) (*Rebeldes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnviarComandoLeia not implemented")
+}
+func (UnimplementedFulcrumServiceServer) InformarMerge(context.Context, *HelloRequest) (*HelloReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InformarMerge not implemented")
+}
+func (UnimplementedFulcrumServiceServer) InformarInicioEnvio(context.Context, *HelloRequest) (*HelloReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InformarInicioEnvio not implemented")
+}
+func (UnimplementedFulcrumServiceServer) EnviarComandoMerge(context.Context, *ComandoSend) (*ComandoReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnviarComandoMerge not implemented")
+}
+func (UnimplementedFulcrumServiceServer) Mergan(context.Context, *HelloRequest) (*HelloReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Mergan not implemented")
 }
 func (UnimplementedFulcrumServiceServer) mustEmbedUnimplementedFulcrumServiceServer() {}
 
@@ -238,6 +294,78 @@ func _FulcrumService_EnviarComandoLeia_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FulcrumService_InformarMerge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HelloRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FulcrumServiceServer).InformarMerge(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.FulcrumService/InformarMerge",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FulcrumServiceServer).InformarMerge(ctx, req.(*HelloRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FulcrumService_InformarInicioEnvio_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HelloRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FulcrumServiceServer).InformarInicioEnvio(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.FulcrumService/InformarInicioEnvio",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FulcrumServiceServer).InformarInicioEnvio(ctx, req.(*HelloRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FulcrumService_EnviarComandoMerge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ComandoSend)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FulcrumServiceServer).EnviarComandoMerge(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.FulcrumService/EnviarComandoMerge",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FulcrumServiceServer).EnviarComandoMerge(ctx, req.(*ComandoSend))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FulcrumService_Mergan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HelloRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FulcrumServiceServer).Mergan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.FulcrumService/Mergan",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FulcrumServiceServer).Mergan(ctx, req.(*HelloRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FulcrumService_ServiceDesc is the grpc.ServiceDesc for FulcrumService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -252,6 +380,22 @@ var FulcrumService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "EnviarComandoLeia",
 			Handler:    _FulcrumService_EnviarComandoLeia_Handler,
+		},
+		{
+			MethodName: "InformarMerge",
+			Handler:    _FulcrumService_InformarMerge_Handler,
+		},
+		{
+			MethodName: "InformarInicioEnvio",
+			Handler:    _FulcrumService_InformarInicioEnvio_Handler,
+		},
+		{
+			MethodName: "EnviarComandoMerge",
+			Handler:    _FulcrumService_EnviarComandoMerge_Handler,
+		},
+		{
+			MethodName: "Mergan",
+			Handler:    _FulcrumService_Mergan_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

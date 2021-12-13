@@ -29,7 +29,7 @@ func (s *serverFulcrum) EnviarComando(ctx context.Context, in *pb.ComandoSend) (
 	return &pb.ComandoReply{Comando: in.Comando}, nil
 }
 
-func (s *serverFulcrum)EnviarComandoLeia(ctx context.Context, in *pb.ComandoSend) (*pb.ComandoReply, error) {
+func (s *serverFulcrum)EnviarComandoLeia(ctx context.Context, in *pb.ComandoSend) (*pb.Rebeldes, error) {
 	fmt.Println("Comando de Leia recibido")
 	fmt.Println("Comando: " + in.Comando)
 	numeroRebeldes := interpretarMensajeLeia(in.Comando,in.Vector)
