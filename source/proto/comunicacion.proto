@@ -22,7 +22,7 @@ message ComandoReply{
 }
 
 message Rebeldes{
-    string Rebeldes = 1;
+    string numero = 1;
     string vector = 2;
 }
 
