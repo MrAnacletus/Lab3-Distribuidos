@@ -141,7 +141,7 @@ var BrokerService_ServiceDesc = grpc.ServiceDesc{
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FulcrumServiceClient interface {
 	EnviarComando(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*ComandoReply, error)
-	EnviarComandoLeia(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*ComandoReply, error)
+	EnviarComandoLeia(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*Rebeldes, error)
 }
 
 type fulcrumServiceClient struct {
@@ -161,8 +161,8 @@ func (c *fulcrumServiceClient) EnviarComando(ctx context.Context, in *ComandoSen
 	return out, nil
 }
 
-func (c *fulcrumServiceClient) EnviarComandoLeia(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*ComandoReply, error) {
-	out := new(ComandoReply)
+func (c *fulcrumServiceClient) EnviarComandoLeia(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*Rebeldes, error) {
+	out := new(Rebeldes)
 	err := c.cc.Invoke(ctx, "/grpc.FulcrumService/EnviarComandoLeia", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -175,7 +175,7 @@ func (c *fulcrumServiceClient) EnviarComandoLeia(ctx context.Context, in *Comand
 // for forward compatibility
 type FulcrumServiceServer interface {
 	EnviarComando(context.Context, *ComandoSend) (*ComandoReply, error)
-	EnviarComandoLeia(context.Context, *ComandoSend) (*ComandoReply, error)
+	EnviarComandoLeia(context.Context, *ComandoSend) (*Rebeldes, error)
 	mustEmbedUnimplementedFulcrumServiceServer()
 }
 
@@ -186,7 +186,7 @@ type UnimplementedFulcrumServiceServer struct {
 func (UnimplementedFulcrumServiceServer) EnviarComando(context.Context, *ComandoSend) (*ComandoReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnviarComando not implemented")
 }
-func (UnimplementedFulcrumServiceServer) EnviarComandoLeia(context.Context, *ComandoSend) (*ComandoReply, error) {
+func (UnimplementedFulcrumServiceServer) EnviarComandoLeia(context.Context, *ComandoSend) (*Rebeldes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnviarComandoLeia not implemented")
 }
 func (UnimplementedFulcrumServiceServer) mustEmbedUnimplementedFulcrumServiceServer() {}

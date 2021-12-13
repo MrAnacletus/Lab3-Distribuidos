@@ -21,6 +21,11 @@ message ComandoReply{
     string vector = 2;
 }
 
+message Rebeldes{
+    string Rebeldes = 1;
+    string vector = 2;
+}
+
 service BrokerService {
     rpc SayHello (HelloRequest) returns (HelloReply);
     rpc EnviarComando(HelloRequest) returns (HelloReply);
@@ -28,5 +33,5 @@ service BrokerService {
 
 service FulcrumService{
     rpc EnviarComando(ComandoSend) returns (ComandoReply);
-    rpc EnviarComandoLeia(ComandoSend) returns (ComandoReply);
+    rpc EnviarComandoLeia(ComandoSend) returns (Rebeldes);
 }

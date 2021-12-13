@@ -29,7 +29,27 @@ func (s *serverFulcrum) EnviarComando(ctx context.Context, in *pb.ComandoSend) (
 	return &pb.ComandoReply{Comando: in.Comando}, nil
 }
 
+func (s *serverFulcrum)EnviarComandoLeia(ctx context.Context, in *pb.ComandoSend) (*pb.ComandoReply, error) {
+	fmt.Println("Comando de Leia recibido")
+	fmt.Println("Comando: " + in.Comando)
+	numeroRebeldes := interpretarMensajeLeia(in.Comando,in.Vector)
+	return &pb.ComandoReply{Rebeldes: fmt.Sprintf("%d",numeroRebeldes)}, nil
+}
 
+func interpretarMensajeLeia(mensaje string, vector string) {
+	fmt.Println("Interpretando mensaje")
+	fmt.Println("Mensaje: ", mensaje)
+	fmt.Println("Vector: ", vector)
+	// Separar el mensaje
+	// Separar el vector
+	// Obtener el numero de rebeldes de la ciudad
+	// Enviar el numero de rebeldes al cliente
+	mensajeSplit := strings.Split(mensaje, " ")
+	vectorSplit := strings.Split(vector, " ")
+	numeroRebeldes := GetNumberRebelds(mensajeSplit[1], mensajeSplit[2])
+	fmt.Println("Numero de rebeldes: ", numeroRebeldes)
+	// Enviar el numero de rebeldes al cliente
+	return numeroRebeldes
 
 func interpretarMensaje(mensaje string, vector string) {
 	//interpretar el mensaje
