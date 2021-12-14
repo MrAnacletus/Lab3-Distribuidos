@@ -83,12 +83,26 @@ func ConstruirMensaje(){
 		fmt.Println("Se eligio el fulcrum 1")
 		fmt.Println("reenviando mensaje")
 		// Enviar Comando a fulcrum 1
-		enviarAFulcrum(1, comando)
+		enviarABroker(1, comando)
+	}
+	if respuesta == "2"{
+		// Se eligio el fulcrum 2
+		fmt.Println("Se eligio el fulcrum 2")
+		fmt.Println("reenviando mensaje")
+		// Enviar Comando a fulcrum 2
+		enviarABroker(2, comando)
+	}
+	if respuesta == "3"{
+		// Se eligio el fulcrum 3
+		fmt.Println("Se eligio el fulcrum 3")
+		fmt.Println("reenviando mensaje")
+		// Enviar Comando a fulcrum 3
+		enviarABroker(3, comando)
 	}
 }
 
-func enviarAFulcrum(n int, S string) string{
-	// Establecer conexion con el servidor fulcrum
+func enviarABroker(n int, S string) string{
+	// Establecer conexion con el broker
 	fmt.Println("Leia iniciada")
 	puerto := "localhost:" + fmt.Sprintf("%d", 50051+n)
 	conn, err := grpc.Dial(puerto, grpc.WithInsecure())
@@ -96,7 +110,7 @@ func enviarAFulcrum(n int, S string) string{
 		log.Fatalf("Could not connect: %v", err)
 	}
 	defer conn.Close()
-	serviceClient := pb.NewFulcrumServiceClient(conn)
+	serviceClient := pb.NewBrokerServiceClient(conn)
 	// Obtener planeta
 	palabras := regexp.MustCompile(" ").Split(S, -1)
 	planeta := palabras[1]
@@ -124,6 +138,7 @@ func enviarAFulcrum(n int, S string) string{
 	}
 	//Recibir mensajes
 	fmt.Println("Respondiendo")
+	fmt.Println("Vector recibido:" + stream.Vector)
 	return stream.Numero
 }
 

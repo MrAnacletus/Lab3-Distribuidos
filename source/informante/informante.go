@@ -53,7 +53,7 @@ func mensajeInicial(){
 
 func enviarMensaje(mensaje string) string{
 	//Establecer conexion con el servidor broker
-	fmt.Println("Informante iniciado")
+	fmt.Println("Enviar comando a broker")
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Could not connect: %v", err)
@@ -91,6 +91,20 @@ func ConstruirMensaje(){
 		// Enviar Comando a fulcrum 1
 		enviarAFulcrum(1, comando)
 	}
+	if respuesta == "2"{
+		// Se eligio el fulcrum 2
+		fmt.Println("Se eligio el fulcrum 2")
+		fmt.Println("reenviando mensaje")
+		// Enviar Comando a fulcrum 2
+		enviarAFulcrum(2, comando)
+	}
+	if respuesta == "3"{
+		// Se eligio el fulcrum 3
+		fmt.Println("Se eligio el fulcrum 3")
+		fmt.Println("reenviando mensaje")
+		// Enviar Comando a fulcrum 3
+		enviarAFulcrum(3, comando)
+	}
 }
 
 func enviarAFulcrum(n int, S string) string{
@@ -112,7 +126,7 @@ func enviarAFulcrum(n int, S string) string{
 		// Agregarlo a la lista de planetas
 		nombres = append(nombres, planeta)
 		// Agregarlo a la lista de vectores
-		listaVector = append(listaVector, Vector{servidor1: 0, servidor2: 0, servidor3: 0})
+		listaVector = append(listaVector, Vector{servidor1: 5, servidor2: 5, servidor3: 5})
 	}
 	// Crear un canal para recibir mensajes
 	// Escribir el vector de Fulcrum

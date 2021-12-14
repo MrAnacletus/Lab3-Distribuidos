@@ -103,6 +103,8 @@ func interpretarMensaje(mensaje string, vector string) string {
 		if val == palabras[1] {
 			// Si el planeta es el mismo que el que se esta enviando
 			if servidor == 1{
+				fmt.Println("El vector recibido es ", vectorRecibido.servidor1)
+				fmt.Println("El vector de la ciudad es ", listaVector[idx].servidor1)
 				if vectorRecibido.servidor1 > listaVector[idx].servidor1 {
 					// Inconsistencia encontrada
 					fmt.Println("Inconsistencia encontrada")
@@ -110,12 +112,16 @@ func interpretarMensaje(mensaje string, vector string) string {
 					EJECUTARMERGE(palabras[1])
 				}
 			}else if servidor == 2{
+				fmt.Println("El vector recibido es ", vectorRecibido.servidor2)
+				fmt.Println("El vector de la ciudad es ", listaVector[idx].servidor2)
 				if vectorRecibido.servidor2 > listaVector[idx].servidor2 {
 					// Inconsistencia encontrada
 					fmt.Println("Inconsistencia encontrada")
 					EJECUTARMERGE(palabras[1])
 				}
 			}else if servidor == 3{
+				fmt.Println("El vector recibido es ", vectorRecibido.servidor3)
+				fmt.Println("El vector de la ciudad es ", listaVector[idx].servidor3)
 				if vectorRecibido.servidor3 > listaVector[idx].servidor3 {
 					// Inconsistencia encontrada
 					fmt.Println("Inconsistencia encontrada")
@@ -158,7 +164,7 @@ func leerArchivo(pais string) []string {
 	fmt.Println("Leyendo archivo")
 	fmt.Println("Pais: ", pais)
 	// Abrir archivo en modo lectura
-	file, err := os.Open(pais+".txt")
+	file, err := os.Open(pais+ fmt.Sprintf("%d", servidor) +".txt")
 	if err != nil {
 		fmt.Println("Error al abrir el archivo")
 		log.Fatal(err)
@@ -172,7 +178,7 @@ func leerArchivo(pais string) []string {
 		lineas = append(lineas, scanner.Text())
 	}
 	// Cerrar el archivo
-	defer file.Close()
+	file.Close()
 	return lineas
 }
 
@@ -180,13 +186,13 @@ func escribirArchivo(pais string, lineas []string) {
 	fmt.Println("Escribiendo archivo")
 	fmt.Println("Pais: ", pais)
 	// Eliminar el archivo
-	err := os.Remove(pais + ".txt")
+	err := os.Remove(pais + fmt.Sprintf("%d",servidor) + ".txt")
 	if err != nil {
-		fmt.Println("Error al eliminar el archivo")
+		fmt.Println("[191]Error al eliminar el archivo", err)
 		return
 	}
 	// Crear el archivo
-	file, err := os.Create(pais + ".txt")
+	file, err := os.Create(pais + fmt.Sprintf("%d",servidor) + ".txt")
 	if err != nil {
 		fmt.Println("Error al crear el archivo")
 		return
@@ -235,12 +241,12 @@ func AddCity(pais string, ciudad string, valor string) string {
 	fmt.Println("Ciudad: ", ciudad)
 	fmt.Println("Valor: ", valor)
 	// Checar si el archivo existe
-	_, err := os.Stat(pais + ".txt")
+	_, err := os.Stat(pais + fmt.Sprintf("%d",servidor) + ".txt")
 	if err != nil {
 		if os.IsNotExist(err) {
 			fmt.Println("Archivo no existe")
 			// Crear el archivo
-			file, err := os.Create(pais + ".txt")
+			file, err := os.Create(pais + fmt.Sprintf("%d",servidor) + ".txt")
 			if err != nil {
 				fmt.Println("Error al crear el archivo")
 				return "0,0,0"
@@ -256,11 +262,11 @@ func AddCity(pais string, ciudad string, valor string) string {
 	// Escribir el archivo
 	escribirArchivo(pais, lineas)
 	// Verificar si existe el archivo log
-	_, errLog := os.Stat("log" + pais + ".txt")
+	_, errLog := os.Stat("log" + pais + fmt.Sprintf("%d",servidor) + ".txt")
 	if errLog != nil {
 		if os.IsNotExist(errLog) {
 			fmt.Println("El archivo no existe")
-			file, err := os.Create("log" + pais + ".txt")
+			file, err := os.Create("log" + pais + fmt.Sprintf("%d",servidor) + ".txt")
 			if err != nil {
 				fmt.Println("Error al crear el archivo")
 				return "0,0,0"
@@ -285,11 +291,11 @@ func UpdateName(pais string, ciudad string, nombre string) string {
 	// Checar si el archivo existe
 	// Si no existe, crearlo
 	// Si existe, cambiarle el nombre a la ciudad
-	_, err := os.Stat(pais + ".txt")
+	_, err := os.Stat(pais + fmt.Sprintf("%d",servidor) + ".txt")
 	if err != nil {
 		if os.IsNotExist(err) {
 			fmt.Println("El archivo no existe")
-			file, err := os.Create(pais + ".txt")
+			file, err := os.Create(pais + fmt.Sprintf("%d",servidor) + ".txt")
 			if err != nil {
 				fmt.Println("Error al crear el archivo")
 				return "0,0,0"
@@ -313,11 +319,11 @@ func UpdateName(pais string, ciudad string, nombre string) string {
 	// Reescribir el archivo
 	escribirArchivo(pais, lineas)
 	// Verificar si existe el archivo log
-	_, errLog := os.Stat("log" + pais + ".txt")
+	_, errLog := os.Stat("log" + pais + fmt.Sprintf("%d",servidor) + ".txt")
 	if errLog != nil {
 		if os.IsNotExist(errLog) {
 			fmt.Println("El archivo no existe")
-			file, err := os.Create("log" + pais + ".txt")
+			file, err := os.Create("log" + pais + fmt.Sprintf("%d",servidor) + ".txt")
 			if err != nil {
 				fmt.Println("Error al crear el archivo")
 				return "0"
@@ -343,11 +349,11 @@ func UpdateValor(pais string, ciudad string, valor string) string {
 	// Checar si el archivo existe
 	// Si no existe, crearlo
 	// Si existe, cambiarle el valor a la ciudad
-	_, err := os.Stat(pais + ".txt")
+	_, err := os.Stat(pais + fmt.Sprintf("%d",servidor) + ".txt")
 	if err != nil {
 		if os.IsNotExist(err) {
 			fmt.Println("El archivo no existe")
-			file, err := os.Create(pais + ".txt")
+			file, err := os.Create(pais + fmt.Sprintf("%d",servidor) + ".txt")
 			if err != nil {
 				fmt.Println("Error al crear el archivo")
 				return "0,0,0"
@@ -377,11 +383,11 @@ func UpdateValor(pais string, ciudad string, valor string) string {
 	// Reescribir el archivo
 	escribirArchivo(pais, lineas)
 	// Verificar si existe el archivo log
-	_, errLog := os.Stat("log" + pais + ".txt")
+	_, errLog := os.Stat("log" + pais + fmt.Sprintf("%d",servidor) + ".txt")
 	if errLog != nil {
 		if os.IsNotExist(errLog) {
 			fmt.Println("El archivo no existe")
-			file, err := os.Create("log" + pais + ".txt")
+			file, err := os.Create("log" + pais + fmt.Sprintf("%d",servidor) + ".txt")
 			if err != nil {
 				fmt.Println("Error al crear el archivo")
 				return "0,0,0"
@@ -405,11 +411,11 @@ func DeleteCity(pais string, ciudad string) string {
 	// Checar si el archivo existe
 	// Si no existe, crearlo
 	// Si existe, cambiarle el valor a la ciudad
-	_, err := os.Stat(pais + ".txt")
+	_, err := os.Stat(pais + fmt.Sprintf("%d",servidor) + ".txt")
 	if err != nil {
 		if os.IsNotExist(err) {
 			fmt.Println("El archivo no existe")
-			file, err := os.Create(pais + ".txt")
+			file, err := os.Create(pais + fmt.Sprintf("%d",servidor) + ".txt")
 			if err != nil {
 				fmt.Println("Error al crear el archivo")
 				return "0,0,0"
@@ -436,11 +442,11 @@ func DeleteCity(pais string, ciudad string) string {
 	// Reescribir el archivo
 	escribirArchivo(pais, lineasNuevas)
 	// Verificar si existe el archivo log
-	_, errLog := os.Stat("log" + pais + ".txt")
+	_, errLog := os.Stat("log" + pais + fmt.Sprintf("%d",servidor) + ".txt")
 	if errLog != nil {
 		if os.IsNotExist(errLog) {
 			fmt.Println("El archivo no existe")
-			file, err := os.Create("log" + pais + ".txt")
+			file, err := os.Create("log" + pais + fmt.Sprintf("%d",servidor) + ".txt")
 			if err != nil {
 				fmt.Println("Error al crear el archivo")
 				return "0,0,0"
@@ -465,11 +471,11 @@ func GetNumberRebelds(pais string, ciudad string) (int, string) {
 	// Checar si el archivo existe
 	// Si no existe, crearlo
 	// Si existe, retornar el valor de la ciudad
-	_, err := os.Stat(pais + ".txt")
+	_, err := os.Stat(pais + fmt.Sprintf("%d",servidor) + ".txt")
 	if err != nil {
 		if os.IsNotExist(err) {
 			fmt.Println("El archivo no existe")
-			file, err := os.Create(pais + ".txt")
+			file, err := os.Create(pais + fmt.Sprintf("%d",servidor) + ".txt")
 			if err != nil {
 				fmt.Println("Error al crear el archivo")
 				return -1, "0,0,0"
@@ -538,11 +544,11 @@ func EJECUTARMERGE(planeta string) string{
 	// Distinguir a quienes debemos hacer conexion
 	// Crear conexion con el servidor fulcrum 1
 	// Crear conexion con el servidor fulcrum 2
-	var listaServidores []string
+	listaServidores := [3]string{"fulcrum1", "fulcrum2", "fulcrum3"}
 	if servidor == 1{
 		listaServidores[0] = "localhost:50053"
 		listaServidores[1] = "localhost:50054"
-		listaServidores[2] = "localhost:50051"
+		listaServidores[2] = "localhost:50052"
 	}else if servidor == 2{
 		listaServidores[0] = "localhost:50054"
 		listaServidores[1] = "localhost:50052"
@@ -568,11 +574,11 @@ func EJECUTARMERGE(planeta string) string{
 	client2 := pb.NewFulcrumServiceClient(conn2)
 	// Enviar comando a los servidores fulcrum
 	ComandoEnviado := &pb.HelloRequest{
-		Name: planeta + listaServidores[2],
+		Name: planeta + " " + listaServidores[2],
 	}
 	respuesta, err := client.InformarMerge(context.Background(), ComandoEnviado)
 	if err != nil {
-		log.Fatalf("Error al enviar el comando: %v", err)
+		log.Fatalf("[581]Error al enviar el comando: %v", err)
 	}
 	fmt.Println("Respuesta del servidor 1: ", respuesta.Message)
 	// Esperar a que acabe de enviar comandos
@@ -626,8 +632,10 @@ func (s *serverFulcrum)InformarMerge(ctx context.Context, m *pb.HelloRequest) (*
 	ipServidor := mensajeSeparado[1]
 	// Iniciar envio de comandos
 	var comandosPropios []string = ObtenerComandosPropios(planetaMerge)
+	fmt.Println("Empieza envio de comandos")
 	for idx, comando := range comandosPropios {
-		// Enviar comando a server que corresponda
+		// Enviar comando a server que corresponda}
+		fmt.Println("Envio comandos a servidor fulcrum: ", ipServidor)
 		// Revisar si llegamos al ultimo comando
 		if idx == len(comandosPropios)-1 {
 			// Enviar comando a servidor
@@ -639,7 +647,7 @@ func (s *serverFulcrum)InformarMerge(ctx context.Context, m *pb.HelloRequest) (*
 	return &pb.HelloReply{Message: "Finalizado"}, nil
 }
 
-func EnviarComandoServidorFulcrum(ipServidor string, comando string, flag bool)(bool){
+func EnviarComandoServidorFulcrum(comando string, ipServidor string, flag bool)(bool){
 	// Crear el cliente
 	conn, err := grpc.Dial(ipServidor, grpc.WithInsecure())
 	if err != nil {
@@ -656,7 +664,7 @@ func EnviarComandoServidorFulcrum(ipServidor string, comando string, flag bool)(
 	}
 	respuesta, err := c.EnviarComandoMerge(context.Background(), comandoCreado)
 	if err != nil {
-		log.Fatalf("Error al enviar comando: %v", err)
+		log.Fatalf("[667]Error al enviar comando: %v", err)
 	}
 	if respuesta.Comando == "Finalizado"{
 		return true
@@ -680,7 +688,6 @@ func (s *serverFulcrum)EnviarComandoMerge(ctx context.Context, m *pb.ComandoSend
 		if m.Vector == "fin"{
 			// Final de la recoleccion de comandos, inicio de la segunda recoleccion
 			listaComandosServidor2 = append(listaComandosServidor2, m.Comando)
-			listaComandosFinal, vectorFinal = merge(planetaMerge, listaComandosServidor1, listaComandosServidor2)
 			return &pb.ComandoReply{Comando: "Finalizado"}, nil
 		}
 		listaComandosServidor2 = append(listaComandosServidor2, m.Comando)
@@ -718,15 +725,14 @@ func merge(planeta string, listaComandos1 []string, listaComandos2 []string) ([]
 	// Funcion que tomara dos listas de comandos y un planeta y las unira en una sola lista de comandos
 	// Retorna la lista de comandos
 	// leer lista de comandos  desde el archivo log{planeta}
-	comandosPropios := leerArchivo("log"+planeta)
+	fmt.Println("Merge de comandos")
+	// Obtener comndos propios
+	var comandosPropios []string = ObtenerComandosPropios(planeta)
 	// unir las dos listas de comandos
 	comandosPropios = append(comandosPropios, listaComandos1...)
 	comandosPropios = append(comandosPropios, listaComandos2...)
 	// Eliminar los comandos repetidos
 	comandosPropios = eliminarRepetidos(comandosPropios)
-	// eliminar los archivos log{planeta} y planeta
-	os.Remove("log"+planeta+".txt")
-	os.Remove(planeta+".txt")
 	// Ejecutar los comandos
 	var vectorProvisional string = "0,0,0"
 	for _, comando := range comandosPropios {
@@ -736,7 +742,9 @@ func merge(planeta string, listaComandos1 []string, listaComandos2 []string) ([]
 	}
 	// Merger el vector del planeta con el vector provisional
 	vectorProvisional = mergerVector(planeta, vectorProvisional)
-
+	// eliminar los archivos log{planeta} y planeta
+	os.Remove("log"+planeta+fmt.Sprintf("%d",servidor)+".txt")
+	os.Remove(planeta+fmt.Sprintf("%d",servidor)+".txt")
 	return comandosPropios, vectorProvisional
 }
 
@@ -776,8 +784,21 @@ func ObtenerComandosPropios(planeta string)([]string){
 	// Funcion que obtiene los comandos propios del planeta
 	// Retorna la lista de comandos propios
 	// leer lista de comandos  desde el archivo log{planeta}
-	comandosPropios := leerArchivo("log"+planeta)
-	return comandosPropios
+	// Revisar si existe el archivo
+	if _, err := os.Stat("log"+planeta+fmt.Sprintf("%d",servidor)+".txt"); err == nil {
+		// Si existe el archivo, leerlo
+		comandosPropios := leerArchivo("log"+planeta+fmt.Sprintf("%d",servidor))
+		return comandosPropios
+	}else{
+		// Si no existe el archivo, crearlo
+		// crear el archivo con os
+		file, err := os.Create("log"+planeta+fmt.Sprintf("%d",servidor)+".txt")
+		if err != nil {
+			fmt.Println("Error al crear archivo")
+		}
+		file.Close()
+		return []string{}
+	}
 }
 
 func main() {
@@ -790,4 +811,13 @@ func main() {
 	fmt.Println("Puerto: ", puertoserver)
 	// Iniciar la escucha del servidor
 	ServidorFulcrum(puertoserver)
+	if servidor == 1{
+		// esperar 2 minutos y hacer merge
+		fmt.Println("Esperando 2 minutos para hacer merge")
+		time.Sleep(time.Minute)
+		// Ejecutar el merge
+		for _, planeta := range nombres{
+			EJECUTARMERGE(planeta)
+		}
+	}
 }
