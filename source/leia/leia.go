@@ -121,7 +121,7 @@ func enviarABroker(S string) string{
 	}
 	defer conn.Close()
 	serviceClient := pb.NewBrokerServiceClient(conn)
-	stream, err := serviceClient.EnviarComandoLeia(context.Background(), &pb.HelloRequest{Name: S})
+	stream, err := serviceClient.EnviarComandoLeia(context.Background(), &pb.ComandoSend{Comando: S})
 	if err != nil {
 		log.Fatalf("Error al crear el canal: %v", err)
 	}

@@ -102,105 +102,37 @@ func interpretarMensaje(mensaje string, vector string) string {
 		fmt.Println("Nombre planeta: ", val)
 		if val == palabras[1] {
 			// Si el planeta es el mismo que el que se esta enviando
-			if servidor == 1{
-				fmt.Println("El vector recibido es ", vectorRecibido.servidor1)
-				fmt.Println("El vector de la ciudad es ", listaVector[idx].servidor1)
-				if vectorRecibido.servidor1 > listaVector[idx].servidor1 {
-					// Inconsistencia encontrada
-					fmt.Println("Inconsistencia encontrada")
-					// Agregar comando a log{planeta}.txt
-					// Checar que log{planeta}.txt exista
-					// Si no existe, crearlo
-					// Escribir el comando en el archivo
-					// Verificar si existe el archivo log
-					_, errLog := os.Stat("log" + palabras[1] + fmt.Sprintf("%d",servidor) + ".txt")
-					if errLog != nil {
-						if os.IsNotExist(errLog) {
-							fmt.Println("El archivo no existe")
-							file, err := os.Create("log" + palabras[1] + fmt.Sprintf("%d",servidor) + ".txt")
-							if err != nil {
-								fmt.Println("Error al crear el archivo")
-								return "0,0,0"
-							}
-							file.Close()
-							fmt.Println("Archivo creado")
+			fmt.Println("El vector recibido es ", vectorRecibido.servidor1)
+			fmt.Println("El vector de la ciudad es ", listaVector[idx].servidor1)
+			if vectorRecibido.servidor1 > listaVector[idx].servidor1 || vectorRecibido.servidor2 > listaVector[idx].servidor2 || vectorRecibido.servidor3 > listaVector[idx].servidor3 {
+				// Inconsistencia encontrada
+				fmt.Println("Inconsistencia encontrada")
+				// Agregar comando a log{planeta}.txt
+				// Checar que log{planeta}.txt exista
+				// Si no existe, crearlo
+				// Escribir el comando en el archivo
+				// Verificar si existe el archivo log
+				_, errLog := os.Stat("log" + palabras[1] + fmt.Sprintf("%d",servidor) + ".txt")
+				if errLog != nil {
+					if os.IsNotExist(errLog) {
+						fmt.Println("El archivo no existe")
+						file, err := os.Create("log" + palabras[1] + fmt.Sprintf("%d",servidor) + ".txt")
+						if err != nil {
+							fmt.Println("Error al crear el archivo")
+							return "0,0,0"
 						}
+						file.Close()
+						fmt.Println("Archivo creado")
 					}
-					// Leer archivo Log{planeta}
-					lineasLog := leerArchivo("log"+palabras[1])
-					// Agregar comando a la lista de lineas
-					lineasLog = append(lineasLog, mensaje)
-					// Escribir archivo Log{planeta}
-					escribirArchivo("log"+palabras[1], lineasLog)
-					// Ejecutar comando de merge
-					return EJECUTARMERGE(palabras[1])
 				}
-			}else if servidor == 2{
-				fmt.Println("El vector recibido es ", vectorRecibido.servidor2)
-				fmt.Println("El vector de la ciudad es ", listaVector[idx].servidor2)
-				if vectorRecibido.servidor2 > listaVector[idx].servidor2 {
-					// Inconsistencia encontrada
-					fmt.Println("Inconsistencia encontrada")
-					// Agregar comando a log{planeta}.txt
-					// Checar que log{planeta}.txt exista
-					// Si no existe, crearlo
-					// Escribir el comando en el archivo
-					// Verificar si existe el archivo log
-					_, errLog := os.Stat("log" + palabras[1] + fmt.Sprintf("%d",servidor) + ".txt")
-					if errLog != nil {
-						if os.IsNotExist(errLog) {
-							fmt.Println("El archivo no existe")
-							file, err := os.Create("log" + palabras[1] + fmt.Sprintf("%d",servidor) + ".txt")
-							if err != nil {
-								fmt.Println("Error al crear el archivo")
-								return "0,0,0"
-							}
-							file.Close()
-							fmt.Println("Archivo creado")
-						}
-					}
-					// Leer archivo Log{planeta}
-					lineasLog := leerArchivo("log"+palabras[1])
-					// Agregar comando a la lista de lineas
-					lineasLog = append(lineasLog, mensaje)
-					// Escribir archivo Log{planeta}
-					escribirArchivo("log"+palabras[1], lineasLog)
-					// Ejecutar comando de merge
-					return EJECUTARMERGE(palabras[1])
-				}
-			}else if servidor == 3{
-				fmt.Println("El vector recibido es ", vectorRecibido.servidor3)
-				fmt.Println("El vector de la ciudad es ", listaVector[idx].servidor3)
-				if vectorRecibido.servidor3 > listaVector[idx].servidor3 {
-					// Inconsistencia encontrada
-					fmt.Println("Inconsistencia encontrada")
-					// Agregar comando a log{planeta}.txt
-					// Checar que log{planeta}.txt exista
-					// Si no existe, crearlo
-					// Escribir el comando en el archivo
-					// Verificar si existe el archivo log
-					_, errLog := os.Stat("log" + palabras[1] + fmt.Sprintf("%d",servidor) + ".txt")
-					if errLog != nil {
-						if os.IsNotExist(errLog) {
-							fmt.Println("El archivo no existe")
-							file, err := os.Create("log" + palabras[1] + fmt.Sprintf("%d",servidor) + ".txt")
-							if err != nil {
-								fmt.Println("Error al crear el archivo")
-								return "0,0,0"
-							}
-							file.Close()
-							fmt.Println("Archivo creado")
-						}
-					}
-					// Leer archivo Log{planeta}
-					lineasLog := leerArchivo("log"+palabras[1])
-					// Agregar comando a la lista de lineas
-					lineasLog = append(lineasLog, mensaje)
-					// Escribir archivo Log{planeta}
-					escribirArchivo("log"+palabras[1], lineasLog)
-					// Ejecutar comando de merge
-					return EJECUTARMERGE(palabras[1])
-				}
+				// Leer archivo Log{planeta}
+				lineasLog := leerArchivo("log"+palabras[1])
+				// Agregar comando a la lista de lineas
+				lineasLog = append(lineasLog, mensaje)
+				// Escribir archivo Log{planeta}
+				escribirArchivo("log"+palabras[1], lineasLog)
+				// Ejecutar comando de merge
+				return EJECUTARMERGE(palabras[1])
 			}
 		}
 	}

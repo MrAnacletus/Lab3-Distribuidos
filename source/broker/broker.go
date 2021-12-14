@@ -30,7 +30,7 @@ func (s *server) EnviarComando(ctx context.Context, in *pb.HelloRequest) (*pb.He
 	return &pb.HelloReply{Message: strconv.Itoa(numero)}, nil
 }
 
-func (s *server) EnviarComandoLeia(ctx context.Context, in *pb.HelloRequest) (*pb.Rebeldes, error) {
+func (s *server) EnviarComandoLeia(ctx context.Context, in *pb.ComandoSend) (*pb.Rebeldes, error) {
 	fmt.Println("Recibiendo respuesta desde Fulcrum hacia Leia")
 	//recibir vector y numero de rebeldes desde fulcrum
 	n := 1
@@ -41,7 +41,7 @@ func (s *server) EnviarComandoLeia(ctx context.Context, in *pb.HelloRequest) (*p
 	}
 	defer conn.Close()
 	serviceClient := pb.NewFulcrumServiceClient(conn)
-	stream, err := serviceClient.EnviarComandoLeia(context.Background(), &pb.ComandoSend{Comando: S, Vector: vector})
+	stream, err := serviceClient.EnviarComandoLeia(context.Background(), &pb.ComandoSend{Comando: in.Comando, Vector: in.Vector})
 	if err != nil {
 		log.Fatalf("Error al crear el canal: %v", err)
 	}
