@@ -6,15 +6,31 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
+
 	pb "github.com/MrAnacletus/Lab3-Distribuidos/source/proto"
 	"google.golang.org/grpc"
 )
 
-// Vectores de Fulcrum
-var vector1 = []int{0,0,0}
-var vector2 = []int{0,0,0}
-var vector3 = []int{0,0,0}
+// declarar tipo de dato vector
+type Vector struct {
+	servidor1 int
+	servidor2 int
+	servidor3 int
+}
+// Variable global de arreglo de vectores
+var listaVector []Vector
+// variable global de arreglo de nombres de planetas
+var nombres []string
 
+func stringInSlice(a string, list []string) bool {
+    for _, b := range list {
+        if b == a {
+            return true
+        }
+    }
+    return false
+}
 
 func mensajeInicial(){
 	//Establecer conexion con el servidor broker
@@ -87,25 +103,26 @@ func enviarAFulcrum(n int, S string) string{
 	}
 	defer conn.Close()
 	serviceClient := pb.NewFulcrumServiceClient(conn)
+	// Obtener planeta
+	palabras := regexp.MustCompile(" ").Split(S, -1)
+	planeta := palabras[1]
+	if !stringInSlice(planeta, nombres){
+		// Si el planeta no existe en la lista de planetas
+		fmt.Println("El planeta no existe")
+		// Agregarlo a la lista de planetas
+		nombres = append(nombres, planeta)
+		// Agregarlo a la lista de vectores
+		listaVector = append(listaVector, Vector{servidor1: 0, servidor2: 0, servidor3: 0})
+	}
 	// Crear un canal para recibir mensajes
 	// Escribir el vector de Fulcrum
+	// Buscar vector segun el nombre del planeta
 	vector := ""
-	switch n {
-	case 1:
-		for i := 0; i < 2; i++ {
-			vector = vector + fmt.Sprintf("%d,", vector1[i])
+	for idx, val := range nombres {
+		if val == planeta {
+			// Enviar el vector a Fulcrum
+			vector = vector + fmt.Sprintf("%d", listaVector[idx].servidor1) + "," + fmt.Sprintf("%d", listaVector[idx].servidor2) + "," + fmt.Sprintf("%d", listaVector[idx].servidor3)
 		}
-		vector = vector + fmt.Sprintf("%d", vector1[2])
-	case 2:
-		for i := 0; i < 2; i++ {
-			vector = vector + fmt.Sprintf("%d,", vector2[i])
-		}
-		vector = vector + fmt.Sprintf("%d", vector2[2])
-	case 3:
-		for i := 0; i < 2; i++ {
-			vector = vector + fmt.Sprintf("%d,", vector3[i])
-		}
-		vector = vector + fmt.Sprintf("%d", vector3[2])
 	}
 	stream, err := serviceClient.EnviarComando(context.Background(), &pb.ComandoSend{Comando: S, Vector: vector})
 	if err != nil {
@@ -113,6 +130,7 @@ func enviarAFulcrum(n int, S string) string{
 	}
 	//Recibir mensajes
 	fmt.Println("Respondiendo")
+	fmt.Println("Vector recibido:" + stream.Vector)
 	return stream.Comando
 }
 
@@ -120,5 +138,7 @@ func main(){
 	//Establecemos conexion con el servidor broker
 	mensajeInicial()
 	//Enviar mensaje
-	ConstruirMensaje()
+	for {
+		ConstruirMensaje()
+	}
 }

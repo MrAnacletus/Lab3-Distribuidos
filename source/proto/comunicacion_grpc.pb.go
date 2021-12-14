@@ -133,7 +133,7 @@ var BrokerService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "comunicacion.proto",
+	Metadata: "proto/comunicacion.proto",
 }
 
 // FulcrumServiceClient is the client API for FulcrumService service.
@@ -399,5 +399,5 @@ var FulcrumService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "comunicacion.proto",
+	Metadata: "proto/comunicacion.proto",
 }

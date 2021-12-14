@@ -4,12 +4,32 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"strconv"
 	"os"
 	"bufio"
+	"regexp"
 	"google.golang.org/grpc"
 	pb "github.com/MrAnacletus/Lab3-Distribuidos/source/proto"
 )
+
+//Fulcrumvectores
+type Vector struct {
+	servidor1 int
+	servidor2 int
+	servidor3 int
+}
+// Variable global de arreglo de vectores
+var listaVector []Vector
+// variable global de arreglo de nombres de planetas
+var nombres []string
+
+func stringInSlice(a string, list []string) bool {
+    for _, b := range list {
+        if b == a {
+            return true
+        }
+    }
+    return false
+}
 
 func mensajeInicial(){
 	//Establecer conexion con el servidor broker
@@ -48,90 +68,68 @@ func enviarComando(mensaje string) string{
 	return stream.Message
 }
 
-func boti(){
-	fmt.Println("wena llegaste a la boti")
-	fmt.Println("sirvase")
-	fmt.Println("1. chela")
-	fmt.Println("2. chela")
-	fmt.Println("3. chela")
-	fmt.Println("4. chela")
-	fmt.Println("5. palida")
-	var opcion int
-	fmt.Scan(&opcion)
-	switch opcion{
-		case 1:
-			fmt.Println("ingrese su marca do chela")
-			var chela string
-			fmt.Scan(&chela)
-			fmt.Println("ingrese el numero do chelas que se va a llevar")
-			var cantidad int
-			fmt.Scan(&cantidad)
-			if cantidad == 0 {
-				enviarComando("era la wea")
-			} else {
-				enviarComando("se lleva "+strconv.Itoa(cantidad)+"de "+chela)
-			}
-		case 2:
-			fmt.Println("ingrese su marca do chela")
-			var chela string
-			fmt.Scan(&chela)
-			fmt.Println("ingrese el numero do chelas que se va a llevar")
-			var cantidad int
-			fmt.Scan(&cantidad)
-			if cantidad == 0 {
-				enviarComando("era la wea")
-			} else{
-				enviarComando("se lleva "+strconv.Itoa(cantidad)+"de "+chela)
-			}
-		case 3:
-			fmt.Println("ingrese su marca do chela")
-			var chela string
-			fmt.Scan(&chela)
-			fmt.Println("ingrese el numero do chelas que se va a llevar")
-			var cantidad int
-			fmt.Scan(&cantidad)
-			if cantidad == 0{
-				enviarComando("era la wea")
-			} else{
-				enviarComando("se lleva "+strconv.Itoa(cantidad)+"de "+chela)
-			}
-		case 4:
-			fmt.Println("ingrese su marca do chela")
-			var chela string
-			fmt.Scan(&chela)
-			fmt.Println("ingrese el numero do chelas que se va a llevar")
-			var cantidad int
-			fmt.Scan(&cantidad)
-			if cantidad == 0{
-				enviarComando("era la wea")
-			} else{
-				enviarComando("se lleva "+strconv.Itoa(cantidad)+" de "+chela)
-			}
-		case 5:
-			fmt.Println("era")
-			fmt.Println("era la wea cabros")
-		default:
-			fmt.Println("k chucha")
-	}
-}
-
 func ConstruirMensaje(){
 	//Pregunta cual de los cuatro comandos utilizar
 	fmt.Println("Ingrese el comando que desea utilizar")
-	fmt.Println("Los comandos disponibles son:")
-	fmt.Println("AddCity: AddCity <planeta> <nombre_ciudad> <poblacion> si no quiere poner poblacion escriba 0")
-	fmt.Println("UpdateName: UpdateName <planeta> <nombre_ciudad> <nuevo_nombre>")
-	fmt.Println("UpdateNumber: UpdateNumber <planeta> <nombre_ciudad> <nueva_poblacion>")
-	fmt.Println("DeleteCity: DeleteCity <planeta> <nombre_ciudad>")
+	fmt.Println("El comando disponible es:")
+	fmt.Println("GetNumberRebelds: GetNumberRebelds <nombre_planeta> <nombre_ciudad>")
 	var comando string
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 	comando = scanner.Text()
 	respuesta := enviarComando(comando)
-	fmt.Println(respuesta)
+	if respuesta == "1"{
+		// Se eligio el fulcrum 1
+		fmt.Println("Se eligio el fulcrum 1")
+		fmt.Println("reenviando mensaje")
+		// Enviar Comando a fulcrum 1
+		enviarAFulcrum(1, comando)
+	}
+}
+
+func enviarAFulcrum(n int, S string) string{
+	// Establecer conexion con el servidor fulcrum
+	fmt.Println("Leia iniciada")
+	puerto := "localhost:" + fmt.Sprintf("%d", 50051+n)
+	conn, err := grpc.Dial(puerto, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Could not connect: %v", err)
+	}
+	defer conn.Close()
+	serviceClient := pb.NewFulcrumServiceClient(conn)
+	// Obtener planeta
+	palabras := regexp.MustCompile(" ").Split(S, -1)
+	planeta := palabras[1]
+	if !stringInSlice(planeta, nombres){
+		// Si el planeta no existe en la lista de planetas
+		fmt.Println("El planeta no existe")
+		// Agregarlo a la lista de planetas
+		nombres = append(nombres, planeta)
+		// Agregarlo a la lista de vectores
+		listaVector = append(listaVector, Vector{servidor1: 0, servidor2: 0, servidor3: 0})
+	}
+	// Crear un canal para recibir mensajes
+	// Escribir el vector de Fulcrum
+	// Buscar vector segun el nombre del planeta
+	vector := ""
+	for idx, val := range nombres {
+		if val == planeta {
+			// Enviar el vector a Fulcrum
+			vector = vector + fmt.Sprintf("%d", listaVector[idx].servidor1) + "," + fmt.Sprintf("%d", listaVector[idx].servidor2) + "," + fmt.Sprintf("%d", listaVector[idx].servidor3)
+		}
+	}
+	stream, err := serviceClient.EnviarComandoLeia(context.Background(), &pb.ComandoSend{Comando: S, Vector: vector})
+	if err != nil {
+		log.Fatalf("Error al crear el canal: %v", err)
+	}
+	//Recibir mensajes
+	fmt.Println("Respondiendo")
+	return stream.Numero
 }
 
 func main(){
 	mensajeInicial()
-	boti()
+	for{
+		ConstruirMensaje()
+	}
 }
