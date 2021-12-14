@@ -30,11 +30,25 @@ func (s *server) EnviarComando(ctx context.Context, in *pb.HelloRequest) (*pb.He
 	return &pb.HelloReply{Message: strconv.Itoa(numero)}, nil
 }
 
-func (s *server) EnviarComandoLeia(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+func (s *server) EnviarComandoLeia(ctx context.Context, in *pb.HelloRequest) (*pb.Rebeldes, error) {
+	fmt.Println("Recibiendo respuesta desde Fulcrum hacia Leia")
+	//recibir vector y numero de rebeldes desde fulcrum
+	n := 1
+	puerto := "localhost:" + fmt.Sprintf("%d", 50051+n)
+	conn, err := grpc.Dial(puerto, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Could not connect: %v", err)
+	}
+	defer conn.Close()
+	serviceClient := pb.NewFulcrumServiceClient(conn)
+	stream, err := serviceClient.EnviarComandoLeia(context.Background(), &pb.ComandoSend{Comando: S, Vector: vector})
+	if err != nil {
+		log.Fatalf("Error al crear el canal: %v", err)
+	}
+	rebeldes := stream.Numero
+	vector := stream.Vector
 
-	// aqui
-
-	return &pb.HelloReply{Message: "Mensaje que se retorna a leia"}, nil
+	return &pb.Rebeldes{Numero: rebeldes, Vector: vector}, nil
 }
 
 

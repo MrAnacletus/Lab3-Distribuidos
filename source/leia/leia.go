@@ -17,8 +17,18 @@ type Vector struct {
 	servidor2 int
 	servidor3 int
 }
+
+type weas struct {
+	planeta string
+	ciudad string
+	rebeldes int
+	vector Vector
+	servidor string
+}
+
 // Variable global de arreglo de vectores
 var listaVector []Vector
+var listaweas []weas
 // variable global de arreglo de nombres de planetas
 var nombres []string
 
@@ -83,63 +93,39 @@ func ConstruirMensaje(){
 		fmt.Println("Se eligio el fulcrum 1")
 		fmt.Println("reenviando mensaje")
 		// Enviar Comando a fulcrum 1
-		enviarABroker(1, comando)
+		enviarABroker(comando)
 	}
 	if respuesta == "2"{
 		// Se eligio el fulcrum 2
 		fmt.Println("Se eligio el fulcrum 2")
 		fmt.Println("reenviando mensaje")
 		// Enviar Comando a fulcrum 2
-		enviarABroker(2, comando)
+		enviarABroker(comando)
 	}
 	if respuesta == "3"{
 		// Se eligio el fulcrum 3
 		fmt.Println("Se eligio el fulcrum 3")
 		fmt.Println("reenviando mensaje")
 		// Enviar Comando a fulcrum 3
-		enviarABroker(3, comando)
+		enviarABroker(comando)
 	}
 }
 
-func enviarABroker(n int, S string) string{
+func enviarABroker(S string) string{
 	// Establecer conexion con el broker
 	fmt.Println("Leia iniciada")
-	puerto := "localhost:" + fmt.Sprintf("%d", 50051+n)
+	puerto := "localhost:" + fmt.Sprintf("%d", 50051)
 	conn, err := grpc.Dial(puerto, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Could not connect: %v", err)
 	}
 	defer conn.Close()
 	serviceClient := pb.NewBrokerServiceClient(conn)
-	// Obtener planeta
-	palabras := regexp.MustCompile(" ").Split(S, -1)
-	planeta := palabras[1]
-	if !stringInSlice(planeta, nombres){
-		// Si el planeta no existe en la lista de planetas
-		fmt.Println("El planeta no existe")
-		// Agregarlo a la lista de planetas
-		nombres = append(nombres, planeta)
-		// Agregarlo a la lista de vectores
-		listaVector = append(listaVector, Vector{servidor1: 0, servidor2: 0, servidor3: 0})
-	}
-	// Crear un canal para recibir mensajes
-	// Escribir el vector de Fulcrum
-	// Buscar vector segun el nombre del planeta
-	vector := ""
-	for idx, val := range nombres {
-		if val == planeta {
-			// Enviar el vector a Fulcrum
-			vector = vector + fmt.Sprintf("%d", listaVector[idx].servidor1) + "," + fmt.Sprintf("%d", listaVector[idx].servidor2) + "," + fmt.Sprintf("%d", listaVector[idx].servidor3)
-		}
-	}
-	stream, err := serviceClient.EnviarComandoLeia(context.Background(), &pb.ComandoSend{Comando: S, Vector: vector})
+	stream, err := serviceClient.EnviarComandoLeia(context.Background(), &pb.HelloRequest{Name: S})
 	if err != nil {
 		log.Fatalf("Error al crear el canal: %v", err)
 	}
-	//Recibir mensajes
-	fmt.Println("Respondiendo")
-	fmt.Println("Vector recibido:" + stream.Vector)
-	return stream.Numero
+	return stream.Numero, stream.Vector
 }
 
 func main(){

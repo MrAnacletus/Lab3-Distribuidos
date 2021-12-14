@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type BrokerServiceClient interface {
 	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
 	EnviarComando(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
-	EnviarComandoLeia(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+	EnviarComandoLeia(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*Rebeldes, error)
 }
 
 type brokerServiceClient struct {
@@ -49,8 +49,8 @@ func (c *brokerServiceClient) EnviarComando(ctx context.Context, in *HelloReques
 	return out, nil
 }
 
-func (c *brokerServiceClient) EnviarComandoLeia(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
-	out := new(HelloReply)
+func (c *brokerServiceClient) EnviarComandoLeia(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*Rebeldes, error) {
+	out := new(Rebeldes)
 	err := c.cc.Invoke(ctx, "/grpc.BrokerService/EnviarComandoLeia", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func (c *brokerServiceClient) EnviarComandoLeia(ctx context.Context, in *HelloRe
 type BrokerServiceServer interface {
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
 	EnviarComando(context.Context, *HelloRequest) (*HelloReply, error)
-	EnviarComandoLeia(context.Context, *HelloRequest) (*HelloReply, error)
+	EnviarComandoLeia(context.Context, *ComandoSend) (*Rebeldes, error)
 	mustEmbedUnimplementedBrokerServiceServer()
 }
 
@@ -78,7 +78,7 @@ func (UnimplementedBrokerServiceServer) SayHello(context.Context, *HelloRequest)
 func (UnimplementedBrokerServiceServer) EnviarComando(context.Context, *HelloRequest) (*HelloReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnviarComando not implemented")
 }
-func (UnimplementedBrokerServiceServer) EnviarComandoLeia(context.Context, *HelloRequest) (*HelloReply, error) {
+func (UnimplementedBrokerServiceServer) EnviarComandoLeia(context.Context, *ComandoSend) (*Rebeldes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnviarComandoLeia not implemented")
 }
 func (UnimplementedBrokerServiceServer) mustEmbedUnimplementedBrokerServiceServer() {}
@@ -131,7 +131,7 @@ func _BrokerService_EnviarComando_Handler(srv interface{}, ctx context.Context, 
 }
 
 func _BrokerService_EnviarComandoLeia_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HelloRequest)
+	in := new(ComandoSend)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -143,7 +143,7 @@ func _BrokerService_EnviarComandoLeia_Handler(srv interface{}, ctx context.Conte
 		FullMethod: "/grpc.BrokerService/EnviarComandoLeia",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BrokerServiceServer).EnviarComandoLeia(ctx, req.(*HelloRequest))
+		return srv.(BrokerServiceServer).EnviarComandoLeia(ctx, req.(*ComandoSend))
 	}
 	return interceptor(ctx, in, info, handler)
 }
