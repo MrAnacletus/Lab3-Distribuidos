@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	pb "github.com/MrAnacletus/Lab3-Distribuidos/source/proto"
 	"google.golang.org/grpc"
@@ -105,16 +106,20 @@ func interpretarMensaje(mensaje string, vector string) string {
 				if vectorRecibido.servidor1 > listaVector[idx].servidor1 {
 					// Inconsistencia encontrada
 					fmt.Println("Inconsistencia encontrada")
+					// Ejecutar comando de merge
+					EJECUTARMERGE(palabras[1])
 				}
 			}else if servidor == 2{
 				if vectorRecibido.servidor2 > listaVector[idx].servidor2 {
 					// Inconsistencia encontrada
 					fmt.Println("Inconsistencia encontrada")
+					EJECUTARMERGE(palabras[1])
 				}
 			}else if servidor == 3{
 				if vectorRecibido.servidor3 > listaVector[idx].servidor3 {
 					// Inconsistencia encontrada
 					fmt.Println("Inconsistencia encontrada")
+					EJECUTARMERGE(palabras[1])
 				}
 			}
 		}
@@ -517,6 +522,148 @@ func ServidorFulcrum(puertoserver int) {
 	}
 }
 
+// Funcion driver de todo el merge
+func EJECUTARMERGE(planeta string) string{
+	// Este servidor sera el que haga el merge primero
+	// Informar a los otros servers fulcrum para que envien sus comandos
+	// Recibir los comandos de los otros servers
+	// Ejecutar el merge
+	// Enviar los comandos finales a los otros fulcrum
+	// Informar a los otros servers fulcrum que se han actualizado
+	// Actualizar los vectores de los otros servers
+	// retornar el vector final
+	fmt.Println("Ejecutando merge")
+	fmt.Println("Planeta: ", planeta)
+	// Crear conexion que utilizaremos con los servidores fulcrum
+	// Distinguir a quienes debemos hacer conexion
+	// Crear conexion con el servidor fulcrum 1
+	// Crear conexion con el servidor fulcrum 2
+	var listaServidores []string
+	if servidor == 1{
+		listaServidores[0] = "localhost:50053"
+		listaServidores[1] = "localhost:50054"
+		listaServidores[2] = "localhost:50051"
+	}else if servidor == 2{
+		listaServidores[0] = "localhost:50054"
+		listaServidores[1] = "localhost:50052"
+		listaServidores[2] = "localhost:50053"
+	}else{
+		listaServidores[0] = "localhost:50052"
+		listaServidores[1] = "localhost:50053"
+		listaServidores[2] = "localhost:50054"
+	}
+	// Crear conexion con el servidor fulcrum 1
+	conn, err := grpc.Dial(listaServidores[0], grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Error al conectarse con el servidor: %v", err)
+	}
+	defer conn.Close()
+	client := pb.NewFulcrumServiceClient(conn)
+	// Crear conexion con el servidor fulcrum 2
+	conn2, err := grpc.Dial(listaServidores[1], grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Error al conectarse con el servidor: %v", err)
+	}
+	defer conn2.Close()
+	client2 := pb.NewFulcrumServiceClient(conn2)
+	// Enviar comando a los servidores fulcrum
+	ComandoEnviado := &pb.HelloRequest{
+		Name: planeta + listaServidores[2],
+	}
+	respuesta, err := client.InformarMerge(context.Background(), ComandoEnviado)
+	if err != nil {
+		log.Fatalf("Error al enviar el comando: %v", err)
+	}
+	fmt.Println("Respuesta del servidor 1: ", respuesta.Message)
+	// Esperar a que acabe de enviar comandos
+	time.Sleep(time.Second * 2)
+	respuesta2, err2 := client2.InformarMerge(context.Background(), ComandoEnviado)
+	if err2 != nil {
+		log.Fatalf("Error al enviar el comando: %v", err2)
+	}
+	fmt.Println("Respuesta del servidor 2: ", respuesta2.Message)
+	// Esperar a que acabe de enviar comandos
+	time.Sleep(time.Second * 2)
+	// Ejecutar el merge
+	ListaComandosFinal, vectorFinal := merge(planeta, listaComandosServidor1, listaComandosServidor2)
+	// Enviar los comandos finales a los otros servidores
+	for idx, comando := range ListaComandosFinal {
+		// checar si es el ultimo comando
+		var ComandoEnviado *pb.ComandoSend
+		if idx == len(ListaComandosFinal)-1 {
+			ComandoEnviado = &pb.ComandoSend{
+				Comando: comando,
+				Vector: "fin",
+			}
+		}else{
+			ComandoEnviado = &pb.ComandoSend{
+				Comando: comando,
+				Vector: "0,0,0",
+			}
+		}
+		respuesta, err := client.EnviarComandoMergeFinal(context.Background(), ComandoEnviado)
+		if err != nil {
+			log.Fatalf("Error al enviar el comando: %v", err)
+		}
+		fmt.Println("Respuesta del servidor 1: ", respuesta.Comando)
+		respuesta2, err2 := client2.EnviarComandoMergeFinal(context.Background(), ComandoEnviado)
+		if err2 != nil {
+			log.Fatalf("Error al enviar el comando: %v", err2)
+		}
+		fmt.Println("Respuesta del servidor 2: ", respuesta2.Comando)
+	}
+	// retornar vector final
+	return vectorFinal
+}
+
+
+func (s *serverFulcrum)InformarMerge(ctx context.Context, m *pb.HelloRequest) (*pb.HelloReply, error){
+	fmt.Println("Informar Merge")
+	fmt.Println("Planeta: ", m.Name)
+	// Separar planeta de numero de servidor
+	mensajeSeparado := strings.Split(m.Name, " ")
+	planetaMerge = mensajeSeparado[0]
+	ipServidor := mensajeSeparado[1]
+	// Iniciar envio de comandos
+	var comandosPropios []string = ObtenerComandosPropios(planetaMerge)
+	for idx, comando := range comandosPropios {
+		// Enviar comando a server que corresponda
+		// Revisar si llegamos al ultimo comando
+		if idx == len(comandosPropios)-1 {
+			// Enviar comando a servidor
+			EnviarComandoServidorFulcrum(comando, ipServidor,true)
+		} else {
+			EnviarComandoServidorFulcrum(comando, ipServidor,false)
+		}
+	}
+	return &pb.HelloReply{Message: "Finalizado"}, nil
+}
+
+func EnviarComandoServidorFulcrum(ipServidor string, comando string, flag bool)(bool){
+	// Crear el cliente
+	conn, err := grpc.Dial(ipServidor, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Error al conectar: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewFulcrumServiceClient(conn)
+	// Enviar comando
+	var comandoCreado *pb.ComandoSend
+	if flag {
+		comandoCreado = &pb.ComandoSend{Comando: comando,Vector: "fin"}
+	} else {
+		comandoCreado = &pb.ComandoSend{Comando: comando,Vector: "0,0,0"}
+	}
+	respuesta, err := c.EnviarComandoMerge(context.Background(), comandoCreado)
+	if err != nil {
+		log.Fatalf("Error al enviar comando: %v", err)
+	}
+	if respuesta.Comando == "Finalizado"{
+		return true
+	}
+	return false
+}
+
 func (s *serverFulcrum)EnviarComandoMerge(ctx context.Context, m *pb.ComandoSend) (*pb.ComandoReply, error) {
 	// Recibe los comandos de otros fulcrum y los añade a una lista global de comandos
 	fmt.Println("Recibiendo comando de merge")
@@ -541,6 +688,32 @@ func (s *serverFulcrum)EnviarComandoMerge(ctx context.Context, m *pb.ComandoSend
 	}
 }
 
+func (s *serverFulcrum)EnviarComandoMergeFinal(ctx context.Context, m *pb.ComandoSend) (*pb.ComandoReply, error) {
+	// Recibe los comandos de otros fulcrum y los añade a una lista global de comandos
+	fmt.Println("Recibiendo comando de merge final")
+	if m.Vector == "fin"{
+		// Final de la recoleccion de comandos, inicio de la ejecucion de los comandos
+		listaComandosFinal = append(listaComandosFinal, m.Comando)
+		// Ejecutar los comandos
+		EjecutarComandosMerge(listaComandosFinal)
+	}
+	listaComandosFinal = append(listaComandosFinal, m.Comando)
+	return &pb.ComandoReply{Comando: "Finalizado"}, nil
+}
+
+func EjecutarComandosMerge(listaComandos []string){
+	// Eliminar los archivos log{planeta} y planeta
+	os.Remove("log" + planetaMerge + ".txt")
+	os.Remove(planetaMerge + ".txt")
+	// Ejectuar los comandos
+	var vectorProvisional string = "0,0,0"
+	for _, comando := range listaComandos {
+		fmt.Println("Ejecutando comando: ", comando)
+		// Obtener el vector del planeta
+		vectorProvisional = interpretarMensaje(comando, vectorProvisional)
+	}
+}
+
 func merge(planeta string, listaComandos1 []string, listaComandos2 []string) ([]string, string) {
 	// Funcion que tomara dos listas de comandos y un planeta y las unira en una sola lista de comandos
 	// Retorna la lista de comandos
@@ -555,11 +728,11 @@ func merge(planeta string, listaComandos1 []string, listaComandos2 []string) ([]
 	os.Remove("log"+planeta+".txt")
 	os.Remove(planeta+".txt")
 	// Ejecutar los comandos
-	var vectorProvisional string
+	var vectorProvisional string = "0,0,0"
 	for _, comando := range comandosPropios {
 		fmt.Println("Ejecutando comando: ", comando)
 		// Obtener el vector del planeta
-		vectorProvisional = interpretarMensaje(comando, "0,0,0")
+		vectorProvisional = interpretarMensaje(comando, vectorProvisional)
 	}
 	// Merger el vector del planeta con el vector provisional
 	vectorProvisional = mergerVector(planeta, vectorProvisional)
@@ -597,6 +770,14 @@ func eliminarRepetidos(lista []string) []string {
 		}
 	}
 	return listaSinRepetidos
+}
+
+func ObtenerComandosPropios(planeta string)([]string){
+	// Funcion que obtiene los comandos propios del planeta
+	// Retorna la lista de comandos propios
+	// leer lista de comandos  desde el archivo log{planeta}
+	comandosPropios := leerArchivo("log"+planeta)
+	return comandosPropios
 }
 
 func main() {

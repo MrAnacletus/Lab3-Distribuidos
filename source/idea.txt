@@ -1,0 +1,18 @@
+se recibe solicitud de merge( desde el mismo server )
+enviar solicitud de comandos al servidor 1                  X
+tomar los comandos del server 1                             X
+enviar solicitud de comandos al servidor 2                  X
+tomar los comandos del server 2                             X
+ejecutar los comandos en el propio server                   X
+enviar comandos finales al servidor 1
+enviar comandos finales al servidor 2
+esperar a que ambos servidores terminen de ejecutar
+
+
+si se recibe una solicitud de merge desde otro server       X
+enviar comandos al servidor que los pidió                   X
+
+
+si se reciben comandos finales de otro server
+esperar a que terminen y ejecutar comandos
+enviar ok al servidor que los envió
