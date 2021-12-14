@@ -6,7 +6,7 @@ import (
 	"log"
 	"net"
 	"strconv"
-	// "math/rand"
+	"math/rand"
 	pb "github.com/MrAnacletus/Lab3-Distribuidos/source/proto"
 	"google.golang.org/grpc"
 )
@@ -25,15 +25,14 @@ func (s *server) EnviarComando(ctx context.Context, in *pb.HelloRequest) (*pb.He
 	fmt.Println("Peticion recibida, aceptando juego")
 	fmt.Println("Mensaje: ", in.Name)
 	// Generar un numero entre 1 y 3
-	// numero := 1 + rand.Intn(3)
-	numero := 1
+	numero := 1 + rand.Intn(3)
 	return &pb.HelloReply{Message: strconv.Itoa(numero)}, nil
 }
 
 func (s *server) EnviarComandoLeia(ctx context.Context, in *pb.ComandoSend) (*pb.Rebeldes, error) {
 	fmt.Println("Recibiendo respuesta desde Fulcrum hacia Leia")
 	//recibir vector y numero de rebeldes desde fulcrum
-	n := 1
+	n := 1 + rand.Intn(3)
 	puerto := "localhost:" + fmt.Sprintf("%d", 50051+n)
 	conn, err := grpc.Dial(puerto, grpc.WithInsecure())
 	if err != nil {

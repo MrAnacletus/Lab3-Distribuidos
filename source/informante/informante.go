@@ -126,7 +126,7 @@ func enviarAFulcrum(n int, S string) string{
 		// Agregarlo a la lista de planetas
 		nombres = append(nombres, planeta)
 		// Agregarlo a la lista de vectores
-		listaVector = append(listaVector, Vector{servidor1: 5, servidor2: 5, servidor3: 5})
+		listaVector = append(listaVector, Vector{servidor1: 0, servidor2: 0, servidor3: 0})
 	}
 	// Crear un canal para recibir mensajes
 	// Escribir el vector de Fulcrum

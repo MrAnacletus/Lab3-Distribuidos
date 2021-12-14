@@ -72,16 +72,63 @@ func interpretarMensajeLeia(mensaje string, vector string) (int, string) {
 	fmt.Println("Interpretando mensaje")
 	fmt.Println("Mensaje: ", mensaje)
 	fmt.Println("Vector: ", vector)
+	vectorNuevoMerge := ""
+	flag := false
 	// Separar el mensaje
 	// Separar el vector
 	// Obtener el numero de rebeldes de la ciudad
 	// Enviar el numero de rebeldes al cliente
 	mensajeSplit := strings.Split(mensaje, " ")
-	// vectorSplit := strings.Split(vector, " ")
+	vectorRecibido := StringAVector(vector)
+	// Buscar el planeta en la lista de nombres
+	for idx, planeta := range nombres {
+		if planeta == mensajeSplit[1] {
+			// comprar el vector con el vector del planeta
+			if vectorRecibido.servidor1 > listaVector[idx].servidor1 || vectorRecibido.servidor2 > listaVector[idx].servidor2 || vectorRecibido.servidor3 > listaVector[idx].servidor3 {
+				// Inconsistencia encontrada
+				fmt.Println("Inconsistencia encontrada")
+				// Agregar comando a log{planeta}.txt
+				// Checar que log{planeta}.txt exista
+				// Si no existe, crearlo
+				// Escribir el comando en el archivo
+				// Verificar si existe el archivo log
+				_, errLog := os.Stat("log" + planeta + fmt.Sprintf("%d",servidor) + ".txt")
+				if errLog != nil {
+					if os.IsNotExist(errLog) {
+						fmt.Println("El archivo no existe")
+						file, err := os.Create("log" + planeta + fmt.Sprintf("%d",servidor) + ".txt")
+						if err != nil {
+							fmt.Println("Error al crear el archivo")
+							return 0,"0,0,0"
+						}
+						file.Close()
+						fmt.Println("Archivo creado")
+					}
+				}
+				// Leer archivo Log{planeta}
+				lineasLog := leerArchivo("log"+planeta)
+				// Agregar comando a la lista de lineas
+				lineasLog = append(lineasLog, mensaje)
+				// Escribir archivo Log{planeta}
+				escribirArchivo("log"+planeta, lineasLog)
+				// Ejecutar comando de merge
+				vectorNuevoMerge = EJECUTARMERGE(planeta)
+				flag = true
+			}
+		}
+	}
 	numeroRebeldes, vectorNuevo := GetNumberRebelds(mensajeSplit[1], mensajeSplit[2])
-	fmt.Println("Numero de rebeldes: ", numeroRebeldes)
-	// Enviar el numero de rebeldes al cliente
-	return numeroRebeldes, vectorNuevo
+	if !flag {
+		fmt.Println("Numero de rebeldes: ", numeroRebeldes)
+		fmt.Println("Vector nuevo: ", vectorNuevo)
+		// Enviar el numero de rebeldes al cliente
+		return numeroRebeldes, vectorNuevo
+	} else {
+		fmt.Println("Numero de rebeldes: ", numeroRebeldes)
+		fmt.Println("Vector nuevo: ", vectorNuevoMerge)
+		// Enviar el numero de rebeldes al cliente
+		return numeroRebeldes, vectorNuevoMerge
+	}
 }
 func interpretarMensaje(mensaje string, vector string) string {
 	//interpretar el mensaje
@@ -102,8 +149,8 @@ func interpretarMensaje(mensaje string, vector string) string {
 		fmt.Println("Nombre planeta: ", val)
 		if val == palabras[1] {
 			// Si el planeta es el mismo que el que se esta enviando
-			fmt.Println("El vector recibido es ", vectorRecibido.servidor1)
-			fmt.Println("El vector de la ciudad es ", listaVector[idx].servidor1)
+			fmt.Println("El vector recibido es ", vectorRecibido)
+			fmt.Println("El vector de la ciudad es ", listaVector[idx])
 			if vectorRecibido.servidor1 > listaVector[idx].servidor1 || vectorRecibido.servidor2 > listaVector[idx].servidor2 || vectorRecibido.servidor3 > listaVector[idx].servidor3 {
 				// Inconsistencia encontrada
 				fmt.Println("Inconsistencia encontrada")
@@ -494,7 +541,7 @@ func GetNumberRebelds(pais string, ciudad string) (int, string) {
 	// Buscar vector de la ciudad consultada
 	var vectorCiudad string
 	for idx, n := range nombres{
-		if n == ciudad {
+		if n == pais {
 			vectorEncontrado := listaVector[idx]
 			vectorCiudad = strconv.Itoa(vectorEncontrado.servidor1) + "," + strconv.Itoa(vectorEncontrado.servidor2) + "," + strconv.Itoa(vectorEncontrado.servidor3)
 		}
@@ -720,8 +767,8 @@ func (s *serverFulcrum)EnviarComandoMergeFinal(ctx context.Context, m *pb.Comand
 
 func EjecutarComandosMerge(listaComandos []string){
 	// Eliminar los archivos log{planeta} y planeta
-	os.Remove("log" + planetaMerge + ".txt")
-	os.Remove(planetaMerge + ".txt")
+	os.Remove("log" + planetaMerge +fmt.Sprintf("%d",servidor)+ ".txt")
+	os.Remove(planetaMerge+fmt.Sprintf("%d",servidor)+ ".txt")
 	// Ejectuar los comandos
 	// Borrar duplicados
 	listaComandos = eliminarRepetidos(listaComandos)
@@ -748,9 +795,11 @@ func merge(planeta string, listaComandos1 []string, listaComandos2 []string) ([]
 	comandosPropios = eliminarRepetidos(comandosPropios)
 	// Ejecutar los comandos
 	var vectorProvisional string = "0,0,0"
+	os.Remove(planeta+fmt.Sprintf("%d",servidor)+".txt")
 	for _, comando := range comandosPropios {
 		fmt.Println("Ejecutando comando: ", comando)
 		// Obtener el vector del planeta
+		// Borrar archivo planeta
 		vectorProvisional = InterpretarComandosMerge(comando, vectorProvisional)
 	}
 	// Merger el vector del planeta con el vector provisional
