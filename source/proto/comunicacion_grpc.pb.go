@@ -146,6 +146,7 @@ type FulcrumServiceClient interface {
 	InformarInicioEnvio(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
 	EnviarComandoMerge(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*ComandoReply, error)
 	Mergan(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+	EnviarComandoMergeFinal(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*ComandoReply, error)
 }
 
 type fulcrumServiceClient struct {
@@ -210,6 +211,15 @@ func (c *fulcrumServiceClient) Mergan(ctx context.Context, in *HelloRequest, opt
 	return out, nil
 }
 
+func (c *fulcrumServiceClient) EnviarComandoMergeFinal(ctx context.Context, in *ComandoSend, opts ...grpc.CallOption) (*ComandoReply, error) {
+	out := new(ComandoReply)
+	err := c.cc.Invoke(ctx, "/grpc.FulcrumService/EnviarComandoMergeFinal", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FulcrumServiceServer is the server API for FulcrumService service.
 // All implementations must embed UnimplementedFulcrumServiceServer
 // for forward compatibility
@@ -220,6 +230,7 @@ type FulcrumServiceServer interface {
 	InformarInicioEnvio(context.Context, *HelloRequest) (*HelloReply, error)
 	EnviarComandoMerge(context.Context, *ComandoSend) (*ComandoReply, error)
 	Mergan(context.Context, *HelloRequest) (*HelloReply, error)
+	EnviarComandoMergeFinal(context.Context, *ComandoSend) (*ComandoReply, error)
 	mustEmbedUnimplementedFulcrumServiceServer()
 }
 
@@ -244,6 +255,9 @@ func (UnimplementedFulcrumServiceServer) EnviarComandoMerge(context.Context, *Co
 }
 func (UnimplementedFulcrumServiceServer) Mergan(context.Context, *HelloRequest) (*HelloReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Mergan not implemented")
+}
+func (UnimplementedFulcrumServiceServer) EnviarComandoMergeFinal(context.Context, *ComandoSend) (*ComandoReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnviarComandoMergeFinal not implemented")
 }
 func (UnimplementedFulcrumServiceServer) mustEmbedUnimplementedFulcrumServiceServer() {}
 
@@ -366,6 +380,24 @@ func _FulcrumService_Mergan_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FulcrumService_EnviarComandoMergeFinal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ComandoSend)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FulcrumServiceServer).EnviarComandoMergeFinal(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.FulcrumService/EnviarComandoMergeFinal",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FulcrumServiceServer).EnviarComandoMergeFinal(ctx, req.(*ComandoSend))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FulcrumService_ServiceDesc is the grpc.ServiceDesc for FulcrumService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -396,6 +428,10 @@ var FulcrumService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Mergan",
 			Handler:    _FulcrumService_Mergan_Handler,
+		},
+		{
+			MethodName: "EnviarComandoMergeFinal",
+			Handler:    _FulcrumService_EnviarComandoMergeFinal_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

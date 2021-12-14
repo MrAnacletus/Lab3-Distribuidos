@@ -38,4 +38,5 @@ service FulcrumService{
     rpc InformarInicioEnvio(HelloRequest)returns(HelloReply);
     rpc EnviarComandoMerge(ComandoSend) returns (ComandoReply);
     rpc Mergan(HelloRequest) returns (HelloReply);
+    rpc EnviarComandoMergeFinal(ComandoSend) returns (ComandoReply);
 }

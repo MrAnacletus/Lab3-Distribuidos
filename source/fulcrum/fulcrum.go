@@ -31,6 +31,17 @@ var listaVector []Vector
 var nombres []string
 // Variable que guarda que servidor fulcrum es
 var servidor int
+// Lista de comandos del servidor siguiente a este
+var listaComandosServidor1 []string
+// Lista de comandos del servidor subsiguiente a este
+var listaComandosServidor2 []string
+// Indice de que servidor debemos recibir comandos
+var indiceComandos int = 1
+// Planeta al cual se le está haciendo el merge
+var planetaMerge string = ""
+// Lista de comandos y vector final
+var listaComandosFinal []string
+var vectorFinal string
 
 
 func (s *serverFulcrum) EnviarComando(ctx context.Context, in *pb.ComandoSend) (*pb.ComandoReply, error) {
@@ -506,9 +517,28 @@ func ServidorFulcrum(puertoserver int) {
 	}
 }
 
-func (s *serverFulcrum)EnviarComandoMerge(ctx context.Context, m *pb.ComandoMerge) (*pb.Respuesta, error) {
+func (s *serverFulcrum)EnviarComandoMerge(ctx context.Context, m *pb.ComandoSend) (*pb.ComandoReply, error) {
 	// Recibe los comandos de otros fulcrum y los añade a una lista global de comandos
-
+	fmt.Println("Recibiendo comando de merge")
+	if indiceComandos == 1{
+		if m.Vector == "fin"{
+			// Final de la recoleccion de comandos, inicio de la segunda recoleccion
+			indiceComandos = 2
+			listaComandosServidor1 = append(listaComandosServidor1, m.Comando)
+			return &pb.ComandoReply{Comando: "Finalizado"}, nil
+		}
+		listaComandosServidor1 = append(listaComandosServidor1, m.Comando)
+		return &pb.ComandoReply{Comando: "Recibido"}, nil
+	}else{
+		if m.Vector == "fin"{
+			// Final de la recoleccion de comandos, inicio de la segunda recoleccion
+			listaComandosServidor2 = append(listaComandosServidor2, m.Comando)
+			listaComandosFinal, vectorFinal = merge(planetaMerge, listaComandosServidor1, listaComandosServidor2)
+			return &pb.ComandoReply{Comando: "Finalizado"}, nil
+		}
+		listaComandosServidor2 = append(listaComandosServidor2, m.Comando)
+		return &pb.ComandoReply{Comando: "Recibido"}, nil
+	}
 }
 
 func merge(planeta string, listaComandos1 []string, listaComandos2 []string) ([]string, string) {
