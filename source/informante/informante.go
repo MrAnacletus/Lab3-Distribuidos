@@ -35,7 +35,7 @@ func stringInSlice(a string, list []string) bool {
 func mensajeInicial(){
 	//Establecer conexion con el servidor broker
 	fmt.Println("Informante iniciado")
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial("10.6.40.217:8080", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Could not connect: %v", err)
 	}
