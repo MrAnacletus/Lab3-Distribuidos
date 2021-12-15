@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strconv"
 
 	pb "github.com/MrAnacletus/Lab3-Distribuidos/source/proto"
 	"google.golang.org/grpc"
@@ -156,6 +157,16 @@ func enviarAFulcrum(n int, S string) string{
 	//Recibir mensajes
 	fmt.Println("Respondiendo")
 	fmt.Println("Vector recibido:" + stream.Vector)
+	// Actualizar el vector
+	palabras = regexp.MustCompile(",").Split(stream.Vector, -1)
+	for idx, val := range nombres {
+		if val == planeta {
+			// Enviar el vector a Fulcrum
+			listaVector[idx].servidor1,_ = strconv.Atoi(palabras[0])
+			listaVector[idx].servidor2,_ = strconv.Atoi(palabras[1])
+			listaVector[idx].servidor3,_ = strconv.Atoi(palabras[2])
+		}
+	}
 	return stream.Comando
 }
 
