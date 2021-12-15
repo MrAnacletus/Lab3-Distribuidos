@@ -148,6 +148,7 @@ func enviarAFulcrum(n int, S string) string{
 			vector = vector + fmt.Sprintf("%d", listaVector[idx].servidor1) + "," + fmt.Sprintf("%d", listaVector[idx].servidor2) + "," + fmt.Sprintf("%d", listaVector[idx].servidor3)
 		}
 	}
+	fmt.Println("Vector: ", vector)
 	stream, err := serviceClient.EnviarComando(context.Background(), &pb.ComandoSend{Comando: S, Vector: vector})
 	if err != nil {
 		log.Fatalf("Error al crear el canal: %v", err)
