@@ -7,5 +7,5 @@ informante: informante/informante.go
 leia: leia/leia.go
 	go run leia/leia.go
 	
-README:
+README: README.txt
 	nano README.txt
