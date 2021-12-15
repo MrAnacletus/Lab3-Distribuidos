@@ -42,7 +42,6 @@ var indiceComandos int = 1
 var planetaMerge string = ""
 // Lista de comandos y vector final
 var listaComandosFinal []string
-var vectorFinal string
 
 
 func (s *serverFulcrum) EnviarComando(ctx context.Context, in *pb.ComandoSend) (*pb.ComandoReply, error) {
@@ -777,6 +776,18 @@ func EjecutarComandosMerge(listaComandos []string){
 		fmt.Println("Ejecutando comando: ", comando)
 		// Obtener el vector del planeta
 		vectorProvisional = InterpretarComandosMerge(comando, vectorProvisional)
+	}
+	vectorProvisional = mergerVector(planetaMerge,vectorProvisional)
+	// Actualizar el vector del planeta
+	for idx, valor := range nombres {
+		if valor == planetaMerge {
+			// Separar el vector
+			vectorSeparado := strings.Split(vectorProvisional, ",")
+			// Actualizar el vector del planeta
+			listaVector[idx].servidor1,_ = strconv.Atoi(vectorSeparado[0])
+			listaVector[idx].servidor2,_ = strconv.Atoi(vectorSeparado[1])
+			listaVector[idx].servidor3,_ = strconv.Atoi(vectorSeparado[2])
+		}
 	}
 	os.Remove("log"+planetaMerge+fmt.Sprintf("%d",servidor)+".txt")
 }
