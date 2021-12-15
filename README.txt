@@ -13,13 +13,13 @@ Las maquinas virtuales tienen asignados los siguientes procesos
 	Dist 80: Fulcrum 3 - Leia
 
 Para la correcta ejecución de esta tarea se deben seguir los siguientes pasos:
-.- Ejecutar proceso broker con make Broker en la maquina 77
-.- Ejecutar proceso Fulcrum 1 con make Fulcrum, luego ingresar un 1 en la maquina 78
-.- Ejecutar proceso Fulcrum 2 con make Fulcrum, luego ingresar un 2 en la maquina 79
-.- Ejecutar proceso Fulcrum 3 con make Fulcrum, luego ingresar un 3 en la maquina 80
-.- Ejecutar proceso Informante 1 con make Informante en la maquina 78
-.- Ejecutar proceso Informante 2 con make Informante en la maquina 79
-.- Ejecutar proceso Leia con make Informante en la maquina 80
+.- Ejecutar proceso broker con make broker en la maquina 77
+.- Ejecutar proceso Fulcrum 1 con make fulcrum, luego ingresar un 1 en la maquina 78
+.- Ejecutar proceso Fulcrum 2 con make fulcrum, luego ingresar un 2 en la maquina 79
+.- Ejecutar proceso Fulcrum 3 con make fulcrum, luego ingresar un 3 en la maquina 80
+.- Ejecutar proceso Informante 1 con make informante en la maquina 78
+.- Ejecutar proceso Informante 2 con make informante en la maquina 79
+.- Ejecutar proceso Leia con make leia en la maquina 80
 
 Habiendo hecho todo lo anterior EN ORDEN se puede proceder a utilizar la tarea
 

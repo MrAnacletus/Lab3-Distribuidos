@@ -1,14 +1,11 @@
-run-Lider:
-	go run server/main.go
-
-run-NameNode:
-	go run NameNode/main.go
-
-run-Cliente:
-	go run cliente/main.go
-
-run-Pozo:
-	go run pozo/main.go
-
+broker:
+	go run broker/broker.go
+fulcrum:
+	go run fulcrum/fulcrum.go
+informante:
+	go run informante/informante.go
+leia:
+	go run leia/leia.go
+	
 README:
 	nano README.txt
