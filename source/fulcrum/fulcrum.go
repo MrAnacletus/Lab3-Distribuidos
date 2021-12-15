@@ -599,17 +599,17 @@ func EJECUTARMERGE(planeta string) string{
 	// Crear conexion con el servidor fulcrum 2
 	listaServidores := [3]string{"fulcrum1", "fulcrum2", "fulcrum3"}
 	if servidor == 1{
-		listaServidores[0] = "localhost:50053"
-		listaServidores[1] = "localhost:50054"
-		listaServidores[2] = "localhost:50052"
+		listaServidores[0] = "10.6.40.219:8080"
+		listaServidores[1] = "10.6.40.220:8080"
+		listaServidores[2] = "10.6.40.218:8080"
 	}else if servidor == 2{
-		listaServidores[0] = "localhost:50054"
-		listaServidores[1] = "localhost:50052"
-		listaServidores[2] = "localhost:50053"
+		listaServidores[0] = "10.6.40.220:8080"
+		listaServidores[1] = "10.6.40.218:8080"
+		listaServidores[2] = "10.6.40.219:8080"
 	}else{
-		listaServidores[0] = "localhost:50052"
-		listaServidores[1] = "localhost:50053"
-		listaServidores[2] = "localhost:50054"
+		listaServidores[0] = "10.6.40.218:8080"
+		listaServidores[1] = "10.6.40.219:8080"
+		listaServidores[2] = "10.6.40.220:8080"
 	}
 	// Crear conexion con el servidor fulcrum 1
 	conn, err := grpc.Dial(listaServidores[0], grpc.WithInsecure())
