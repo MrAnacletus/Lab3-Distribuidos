@@ -567,10 +567,10 @@ func GetNumberRebelds(pais string, ciudad string) (int, string) {
 	return -1, "0,0,0"
 }
 
-func ServidorFulcrum(puertoserver int) {
+func ServidorFulcrum() {
 	// Crear el servidor
 	fmt.Println("Servidor Fulcrum")
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", puertoserver))
+	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalf("Error al escuchar: %v", err)
 	}
@@ -901,10 +901,8 @@ func main() {
 	numeroserver := 0
 	fmt.Scanln(&numeroserver)
 	servidor = numeroserver
-	puertoserver := 50051 + numeroserver
-	fmt.Println("Puerto: ", puertoserver)
 	// Iniciar la escucha del servidor
-	ServidorFulcrum(puertoserver)
+	ServidorFulcrum()
 	if servidor == 1{
 		// esperar 2 minutos y hacer merge
 		fmt.Println("Esperando 2 minutos para hacer merge")

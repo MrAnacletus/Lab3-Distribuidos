@@ -28,7 +28,7 @@ var nombres []string
 func mensajeInicial(){
 	//Establecer conexion con el servidor broker
 	fmt.Println("Leia iniciada")
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial("10.6.40.217:8080", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Could not connect: %v", err)
 	}
@@ -46,7 +46,7 @@ func mensajeInicial(){
 
 func enviarComando(mensaje string) (string, string){
 	//Establecer conexion con el servidor broker
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial("10.6.40.217:8080", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Could not connect: %v", err)
 	}

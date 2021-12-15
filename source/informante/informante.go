@@ -54,7 +54,7 @@ func mensajeInicial(){
 func enviarMensaje(mensaje string) string{
 	//Establecer conexion con el servidor broker
 	fmt.Println("Enviar comando a broker")
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial("10.6.40.217:8080", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Could not connect: %v", err)
 	}
@@ -110,7 +110,17 @@ func ConstruirMensaje(){
 func enviarAFulcrum(n int, S string) string{
 	// Establecer conexion con el servidor fulcrum
 	fmt.Println("Informante iniciado")
-	puerto := "localhost:" + fmt.Sprintf("%d", 50051+n)
+	puerto := ""
+	if n == 1{
+		// Se eligio el fulcrum 1
+		puerto = "10.6.40.218:8080"
+	}else if n == 2{
+		// Se eligio el fulcrum 2
+		puerto = "10.6.40.219:8080"
+	}else if n == 3{
+		// Se eligio el fulcrum 3
+		puerto = "10.6.40.220:8080"
+	}
 	conn, err := grpc.Dial(puerto, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Could not connect: %v", err)

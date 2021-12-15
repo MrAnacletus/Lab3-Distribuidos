@@ -33,7 +33,17 @@ func (s *server) EnviarComandoLeia(ctx context.Context, in *pb.ComandoSend) (*pb
 	fmt.Println("Recibiendo respuesta desde Fulcrum hacia Leia")
 	//recibir vector y numero de rebeldes desde fulcrum
 	n := 1 + rand.Intn(3)
-	puerto := "localhost:" + fmt.Sprintf("%d", 50051+n)
+	puerto := ""
+	if n == 1{
+		// Se eligio el fulcrum 1
+		puerto = "10.6.40.218:8080"
+	}else if n == 2{
+		// Se eligio el fulcrum 2
+		puerto = "10.6.40.219:8080"
+	}else if n == 3{
+		// Se eligio el fulcrum 3
+		puerto = "10.6.40.220:8080"
+	}
 	conn, err := grpc.Dial(puerto, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Could not connect: %v", err)
@@ -54,7 +64,7 @@ func (s *server) EnviarComandoLeia(ctx context.Context, in *pb.ComandoSend) (*pb
 func ServidorBroker(){
 	// Crear el servidor
 	fmt.Println("Servido Broker")
-	lis, err := net.Listen("tcp", ":50051")
+	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalf("Error al escuchar: %v", err)
 	}
